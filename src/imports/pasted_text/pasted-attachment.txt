@@ -1,0 +1,686 @@
+Crie uma landing page premium, elegante, moderna e altamente visual para um fotógrafo profissional.
+
+## MATERIAL FORNECIDO
+
+Eu vou fornecer **uma imagem contendo a logo da empresa/fotógrafo**.
+
+Essa logo será o principal material visual real disponível nesta primeira versão da landing page.
+
+**IMPORTANTE:**
+
+* Utilize a logo fornecida na própria interface.
+* A logo deve ser incorporada de maneira elegante e profissional.
+* Analise visualmente as características da logo, incluindo cores, estilo, formas e identidade.
+* Use a logo como referência para construir a identidade visual da página.
+* Não altere, distorça ou redesenhe a logo.
+* Preserve suas proporções originais.
+* Não crie outra logo.
+* Não invente elementos de identidade visual que entrem em conflito com a logo.
+* A identidade da landing page deve complementar a logo, e não competir com ela.
+
+**As fotografias profissionais ainda NÃO serão fornecidas.**
+
+Portanto:
+
+* Utilize placeholders elegantes para as fotografias.
+* Não invente fotografias específicas do fotógrafo.
+* Não utilize fotos genéricas com aparência de banco de imagens barato.
+* Crie áreas visualmente sofisticadas preparadas para receber as fotografias reais posteriormente.
+* Toda a estrutura deve permitir substituir os placeholders pelas fotografias reais sem precisar reconstruir a página.
+
+---
+
+# 1. CONCEITO GERAL
+
+Não quero uma landing page genérica.
+
+Quero uma **experiência digital premium para um fotógrafo profissional**, com estética semelhante a um portfólio editorial/cinematográfico de alto padrão.
+
+A primeira impressão deve transmitir:
+
+* Sofisticação
+* Exclusividade
+* Criatividade
+* Profissionalismo
+* Qualidade
+* Sensibilidade artística
+* Alto valor percebido
+
+A página deve ser visualmente marcante, mas sem exageros.
+
+Priorize:
+
+**minimalismo + fotografia + tipografia + movimento + espaço negativo.**
+
+---
+
+# 2. IDENTIDADE VISUAL BASEADA NA LOGO
+
+A logo fornecida deve ser utilizada como referência principal da identidade visual.
+
+Analise:
+
+* Cores predominantes
+* Contraste
+* Formas
+* Tipografia presente na logo
+* Estilo visual
+* Sensação transmitida pela marca
+
+A partir disso, desenvolva uma identidade complementar para toda a landing page.
+
+Se a logo utilizar cores neutras, mantenha uma estética sofisticada e neutra.
+
+Se possuir uma cor de destaque, utilize essa cor de forma estratégica e discreta em:
+
+* detalhes;
+* linhas;
+* pequenos indicadores;
+* hover states;
+* botões;
+* elementos de navegação.
+
+Não espalhe a cor da marca excessivamente pela página.
+
+A logo deve continuar sendo um dos elementos mais reconhecíveis da interface.
+
+---
+
+# 3. HERO — PRIMEIRA IMPRESSÃO
+
+A primeira tela deve ocupar aproximadamente 100vh e ser extremamente impactante.
+
+Não criar um Hero tradicional com apenas:
+
+"Olá, sou fotógrafo"
+
+e um botão.
+
+Quero uma experiência visual inovadora.
+
+A logo deve aparecer de maneira elegante no Hero ou na navegação inicial, sem ficar excessivamente grande.
+
+Criar uma grande área visual preparada para receber posteriormente uma fotografia de destaque.
+
+Utilizar inicialmente um placeholder sofisticado.
+
+Apresentar:
+
+[NOME DO FOTÓGRAFO]
+
+PHOTOGRAPHY / VISUAL STORIES
+
+ou uma composição semelhante.
+
+O texto deve ser facilmente substituível posteriormente.
+
+---
+
+# 4. HERO INTERATIVO
+
+O Hero deve possuir uma experiência de movimento sofisticada.
+
+Quando o usuário começar a rolar a página:
+
+* a imagem deve se movimentar suavemente;
+* aplicar parallax;
+* realizar pequeno zoom;
+* alterar escala;
+* movimentar o texto em velocidade diferente;
+* revelar gradualmente a próxima seção;
+* utilizar máscaras ou efeitos de revelação;
+* criar sensação de profundidade.
+
+A transição deve parecer cinematográfica.
+
+Não quero animações rápidas ou exageradas.
+
+Quero uma sensação de:
+
+**"Estou entrando em uma experiência visual."**
+
+---
+
+# 5. NAVEGAÇÃO
+
+Criar uma navbar minimalista e sofisticada.
+
+Desktop:
+
+ESQUERDA:
+Logo fornecida pelo usuário.
+
+CENTRO:
+WORK
+ABOUT
+SERVICES
+CONTACT
+
+DIREITA:
+LET'S TALK
+
+A logo deve manter suas proporções e possuir tamanho adequado.
+
+Durante o scroll, a navbar pode:
+
+* diminuir levemente;
+* alterar o fundo;
+* aplicar blur discreto;
+* mudar de estado;
+* permanecer fixa de maneira elegante.
+
+No mobile:
+
+* utilizar menu hamburger;
+* abrir menu fullscreen ou drawer;
+* apresentar a logo;
+* utilizar animação suave.
+
+---
+
+# 6. PORTFÓLIO
+
+Criar uma seção:
+
+SELECTED WORK
+
+Subtítulo:
+
+A curated selection of visual stories.
+
+Não utilizar uma simples grade de cards iguais.
+
+Criar uma composição editorial assimétrica.
+
+Utilizar placeholders em diferentes proporções:
+
+* vertical;
+* horizontal;
+* quadrada;
+* panorâmica.
+
+Cada projeto deve apresentar:
+
+01
+PROJECT NAME
+CATEGORY
+2026
+
+Ao passar o mouse:
+
+* imagem aumenta suavemente;
+* informações aparecem;
+* indicador "VIEW PROJECT" surge;
+* cursor pode apresentar estado "VIEW".
+
+---
+
+# 7. GALERIA INTERATIVA
+
+Criar uma experiência de galeria.
+
+Ao clicar em uma fotografia:
+
+* abrir visualização fullscreen;
+* apresentar a imagem em grande escala;
+* mostrar título;
+* categoria;
+* navegação anterior/próxima;
+* botão fechar.
+
+A transição deve ser elegante.
+
+Não utilizar um modal genérico.
+
+---
+
+# 8. SEÇÃO ABOUT
+
+Criar uma seção:
+
+ABOUT
+
+ou
+
+BEHIND THE LENS
+
+Utilizar:
+
+Um lado:
+placeholder para fotografia do fotógrafo.
+
+Outro lado:
+
+[NOME DO FOTÓGRAFO]
+
+Visual storyteller, photographer and creative.
+
+Adicionar texto provisório facilmente substituível.
+
+Não inventar informações biográficas reais.
+
+Criar também pequenos dados/estatísticas como placeholders:
+
+10+
+YEARS OF EXPERIENCE
+
+100+
+PROJECTS
+
+ou valores claramente editáveis.
+
+---
+
+# 9. SERVIÇOS
+
+Criar:
+
+SERVICES
+
+Utilizar uma apresentação editorial, evitando cards tradicionais.
+
+Exemplo:
+
+01 — WEDDINGS
+02 — PORTRAITS
+03 — EVENTS
+04 — EDITORIAL
+05 — COMMERCIAL
+06 — BRANDING
+
+Ao passar o mouse sobre cada item:
+
+* destacar a linha;
+* mostrar placeholder de imagem;
+* movimentar levemente o elemento;
+* alterar opacidade;
+* apresentar informações adicionais.
+
+---
+
+# 10. EXPERIÊNCIA / PROCESSO
+
+Criar:
+
+THE PROCESS
+
+Apresentar quatro etapas:
+
+01 — DISCOVER
+02 — CREATE
+03 — CAPTURE
+04 — DELIVER
+
+Utilizar animações de entrada durante o scroll.
+
+---
+
+# 11. SEÇÃO CINEMATOGRÁFICA
+
+Criar uma grande seção visual antes do contato.
+
+Utilizar um placeholder de fotografia ocupando grande parte da tela.
+
+Durante o scroll:
+
+* aplicar zoom;
+* alterar escala;
+* revelar texto;
+* criar movimento horizontal;
+* utilizar máscara de imagem.
+
+Adicionar uma frase de impacto:
+
+"EVERY FRAME TELLS A STORY."
+
+Essa seção deve funcionar como uma pausa cinematográfica dentro da experiência.
+
+---
+
+# 12. GALERIA COM SCROLL HORIZONTAL
+
+Criar pelo menos uma seção em que o scroll vertical controla uma galeria horizontal.
+
+Exemplo:
+
+[IMAGE 01] → [IMAGE 02] → [IMAGE 03] → [IMAGE 04]
+
+Enquanto o usuário rola verticalmente, as imagens se deslocam horizontalmente.
+
+Essa interação deve ser:
+
+* suave;
+* intuitiva;
+* performática;
+* responsiva.
+
+No mobile, adaptar para swipe/touch.
+
+---
+
+# 13. CALL TO ACTION
+
+Criar uma seção final forte:
+
+LET'S CREATE SOMETHING BEAUTIFUL.
+
+Texto:
+
+Available for selected projects, commissions and collaborations.
+
+Botão:
+
+START A PROJECT
+
+Criar uma animação sofisticada no hover.
+
+---
+
+# 14. CONTATO
+
+Criar uma seção:
+
+CONTACT
+
+ou
+
+LET'S TALK
+
+Adicionar formulário:
+
+Nome
+E-mail
+Telefone
+Tipo de projeto
+Mensagem
+
+Botão:
+
+SEND MESSAGE
+
+Criar uma interface minimalista.
+
+Se não houver backend, criar apenas a interface e deixar a integração preparada.
+
+---
+
+# 15. INFORMAÇÕES DO PROFISSIONAL
+
+No rodapé:
+
+[NOME DO FOTÓGRAFO]
+
+[EMAIL]
+
+[TELEFONE]
+
+[CIDADE / PAÍS]
+
+Instagram
+Behance
+LinkedIn
+
+Todos os dados devem ser placeholders facilmente substituíveis.
+
+---
+
+# 16. FOOTER
+
+Criar footer minimalista.
+
+Utilizar novamente a logo fornecida.
+
+Adicionar:
+
+PHOTOGRAPHY / VISUAL STORIES
+
+© 2026 — All Rights Reserved.
+
+Privacy
+Terms
+
+E:
+
+BACK TO TOP ↑
+
+---
+
+# 17. ANIMAÇÕES
+
+Utilizar animações modernas e sofisticadas.
+
+Priorizar:
+
+* Parallax
+* Scroll reveal
+* Image scale
+* Image reveal
+* Mask transitions
+* Horizontal scrolling
+* Text reveal
+* Fade
+* Transform
+* Microinterações
+
+As animações devem ser lentas, fluidas e elegantes.
+
+Evitar:
+
+* efeitos chamativos;
+* bouncing excessivo;
+* animações rápidas;
+* excesso de elementos se movimentando simultaneamente.
+
+A animação deve melhorar a experiência, não distrair o usuário.
+
+---
+
+# 18. CURSOR
+
+No desktop, criar um cursor personalizado minimalista.
+
+Ao passar sobre imagens:
+
+VIEW
+
+Ao passar sobre links:
+
+pequena alteração visual.
+
+No mobile, remover o cursor personalizado.
+
+---
+
+# 19. RESPONSIVIDADE
+
+A página deve ser totalmente responsiva.
+
+Desktop:
+experiência cinematográfica completa.
+
+Tablet:
+reduzir a complexidade das animações.
+
+Mobile:
+criar uma experiência própria para touch.
+
+Não simplesmente reduzir o layout desktop.
+
+Garantir:
+
+* textos legíveis;
+* imagens adequadas;
+* navegação funcional;
+* botões acessíveis;
+* animações leves;
+* nenhuma quebra visual.
+
+---
+
+# 20. PERFORMANCE
+
+Priorizar performance.
+
+Utilizar:
+
+* transform;
+* opacity;
+* lazy loading;
+* imagens responsivas;
+* componentes reutilizáveis.
+
+Respeitar:
+
+prefers-reduced-motion
+
+Caso o usuário prefira reduzir animações, diminuir ou desativar os efeitos mais complexos.
+
+---
+
+# 21. TECNOLOGIA
+
+Utilizar:
+
+React
+TypeScript
+Tailwind CSS
+
+Para animações, utilizar uma solução moderna como:
+
+GSAP
+
+ou
+
+Framer Motion
+
+conforme for mais adequado.
+
+Criar componentes reutilizáveis:
+
+components/
+Navbar
+Hero
+Portfolio
+Gallery
+About
+Services
+Process
+Contact
+Footer
+
+Evitar criar um único componente gigantesco.
+
+---
+
+# 22. ESTRUTURA DAS IMAGENS
+
+Criar uma estrutura organizada para facilitar a substituição futura das imagens.
+
+Por exemplo:
+
+src/assets/images/
+
+Separar:
+
+hero
+portfolio
+about
+services
+gallery
+
+Inicialmente utilizar placeholders.
+
+Posteriormente, quando eu fornecer as fotografias reais, quero conseguir substituí-las facilmente mantendo:
+
+* proporção;
+* animações;
+* posicionamento;
+* efeitos;
+* responsividade.
+
+---
+
+# 23. TIPOGRAFIA
+
+Utilizar no máximo duas famílias tipográficas.
+
+Preferencialmente:
+
+* uma serifada elegante para títulos;
+* uma sans-serif moderna para interface e textos.
+
+Criar contraste entre títulos grandes e textos pequenos.
+
+Os títulos principais podem ocupar bastante espaço visual.
+
+---
+
+# 24. ACESSIBILIDADE
+
+Garantir:
+
+* HTML semântico;
+* alt text;
+* navegação por teclado;
+* foco visível;
+* labels nos formulários;
+* contraste adequado;
+* botões acessíveis;
+* suporte a reduced motion.
+
+---
+
+# 25. SEO
+
+Preparar:
+
+title
+meta description
+Open Graph
+headings semânticos
+alt text
+
+Exemplo:
+
+[NOME DO FOTÓGRAFO] — Professional Photographer
+
+---
+
+# 26. RESULTADO FINAL
+
+O resultado deve parecer um **portfólio premium desenvolvido especificamente para um fotógrafo profissional**, e não um template genérico.
+
+A experiência deve transmitir:
+
+sofisticação;
+arte;
+profissionalismo;
+exclusividade;
+qualidade.
+
+A prioridade é:
+
+1. Impacto visual
+2. Logo e identidade da marca
+3. Fotografia
+4. Experiência de navegação
+5. Tipografia
+6. Animações
+7. Conversão
+8. Performance
+
+Lembre-se:
+
+**A única imagem real fornecida inicialmente será a LOGO.**
+
+Utilize essa logo na landing page e construa todo o restante da experiência utilizando placeholders sofisticados para as fotografias.
+
+Posteriormente, eu fornecerei as fotografias reais e elas deverão poder substituir os placeholders sem necessidade de reconstruir o layout.
+
+Não invente uma logo alternativa.
+
+Não altere a logo fornecida.
+
+Não deixe a página com aparência de template.
+
+Crie uma experiência visual premium, elegante, inovadora e memorável.
