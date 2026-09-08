@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef, useCallback, type ReactNode } from "react"
-import { motion, useScroll, useTransform, AnimatePresence } from "motion/react"
-import logoSrc from "@/imports/WhatsApp_Image_2026-09-06_at_21.05.09-removebg-preview.png"
+import { useState, useEffect, useRef, type ReactNode } from "react"
+import { motion, useScroll, useTransform, AnimatePresence, MotionConfig } from "motion/react"
+import logoSrc from "@/imports/LogoLuze-Photoroom (1).png"
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
 
@@ -18,100 +18,53 @@ interface PortfolioItem {
 
 const portfolioItems: PortfolioItem[] = [
   {
-    id: 1, number: "01", title: "Golden Hour", category: "WEDDINGS", year: "2026",
+    id: 1, number: "01", title: "Hora dourada", category: "CASAMENTOS", year: "2026",
     imageUrl: "https://images.unsplash.com/photo-1519741497674-611481863552?w=900&h=1200&fit=crop&auto=format",
     span: "md:row-span-2",
   },
   {
-    id: 2, number: "02", title: "Urban Soul", category: "PORTRAITS", year: "2026",
+    id: 2, number: "02", title: "Alma urbana", category: "RETRATOS", year: "2026",
     imageUrl: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=800&h=600&fit=crop&auto=format",
     span: "",
   },
   {
-    id: 3, number: "03", title: "Edge & Form", category: "EDITORIAL", year: "2025",
+    id: 3, number: "03", title: "Linhas e formas", category: "EDITORIAL", year: "2025",
     imageUrl: "https://images.unsplash.com/photo-1509631179647-0177331693ae?w=800&h=600&fit=crop&auto=format",
     span: "",
   },
   {
-    id: 4, number: "04", title: "Into the Wild", category: "LANDSCAPE", year: "2025",
+    id: 4, number: "04", title: "Na natureza", category: "PAISAGENS", year: "2025",
     imageUrl: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&h=700&fit=crop&auto=format",
     span: "md:col-span-2",
   },
   {
-    id: 5, number: "05", title: "Vision Board", category: "COMMERCIAL", year: "2026",
+    id: 5, number: "05", title: "Inspiração", category: "PUBLICIDADE", year: "2026",
     imageUrl: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&h=1000&fit=crop&auto=format",
     span: "",
   },
 ]
 
 const services = [
-  { number: "01", title: "WEDDINGS", desc: "Cinematic coverage of your most intimate moments.", url: "https://images.unsplash.com/photo-1519741497674-611481863552?w=500&h=340&fit=crop&auto=format" },
-  { number: "02", title: "PORTRAITS", desc: "Character studies that reveal the person within.", url: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=500&h=340&fit=crop&auto=format" },
-  { number: "03", title: "EVENTS", desc: "Corporate, cultural and social gatherings.", url: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&h=340&fit=crop&auto=format" },
-  { number: "04", title: "EDITORIAL", desc: "Fashion-forward imagery for print and digital.", url: "https://images.unsplash.com/photo-1509631179647-0177331693ae?w=500&h=340&fit=crop&auto=format" },
-  { number: "05", title: "COMMERCIAL", desc: "Brand and product photography built to convert.", url: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=500&h=340&fit=crop&auto=format" },
-  { number: "06", title: "BRANDING", desc: "Visual identity sessions for founders and teams.", url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&h=340&fit=crop&auto=format" },
+  { number: "01", title: "CASAMENTOS", desc: "Um olhar cinematográfico para os seus momentos mais íntimos.", url: "https://images.unsplash.com/photo-1519741497674-611481863552?w=500&h=340&fit=crop&auto=format" },
+  { number: "02", title: "RETRATOS", desc: "Retratos que revelam sua essência e personalidade.", url: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=500&h=340&fit=crop&auto=format" },
+  { number: "03", title: "EVENTOS", desc: "Registros de encontros corporativos, culturais e sociais.", url: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&h=340&fit=crop&auto=format" },
+  { number: "04", title: "EDITORIAL", desc: "Fotografia de moda para publicações impressas e digitais.", url: "https://images.unsplash.com/photo-1509631179647-0177331693ae?w=500&h=340&fit=crop&auto=format" },
+  { number: "05", title: "PUBLICIDADE", desc: "Fotografia de marcas e produtos que desperta interesse.", url: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=500&h=340&fit=crop&auto=format" },
+  { number: "06", title: "MARCAS", desc: "Ensaios de identidade visual para empreendedores e equipes.", url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&h=340&fit=crop&auto=format" },
 ]
 
 const galleryImages = [
-  { url: "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=1000&h=680&fit=crop&auto=format", alt: "Misty mountain at dawn" },
-  { url: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1000&h=680&fit=crop&auto=format", alt: "Dramatic seascape at dusk" },
-  { url: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1000&h=680&fit=crop&auto=format", alt: "Alpine landscape in mist" },
-  { url: "https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=1000&h=680&fit=crop&auto=format", alt: "Sunbeams through forest canopy" },
-  { url: "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=1000&h=680&fit=crop&auto=format", alt: "Dark ocean waves at night" },
+  { url: "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=1000&h=680&fit=crop&auto=format", alt: "Montanhas refletidas no lago ao amanhecer" },
+  { url: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1000&h=680&fit=crop&auto=format", alt: "Pico de montanha entre nuvens" },
+  { url: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1000&h=680&fit=crop&auto=format", alt: "Paisagem alpina entre montanhas" },
+  { url: "https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=1000&h=680&fit=crop&auto=format", alt: "Raios de sol entre as árvores" },
+  { url: "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=1000&h=680&fit=crop&auto=format", alt: "Vista de Paris ao entardecer" },
 ]
 
 // ─── CUSTOM CURSOR ────────────────────────────────────────────────────────────
 
-function CustomCursor() {
-  const cursorRef = useRef<HTMLDivElement>(null)
-  const [isImage, setIsImage] = useState(false)
-  const [isLink, setIsLink] = useState(false)
-
-  useEffect(() => {
-    const move = (e: MouseEvent) => {
-      if (!cursorRef.current) return
-      cursorRef.current.style.left = `${e.clientX}px`
-      cursorRef.current.style.top = `${e.clientY}px`
-    }
-    const enter = (e: MouseEvent) => {
-      const t = e.target as HTMLElement
-      if (t.closest("[data-cursor-image]")) setIsImage(true)
-      if (t.closest("a, button, [data-cursor-link]")) setIsLink(true)
-    }
-    const leave = () => { setIsImage(false); setIsLink(false) }
-    window.addEventListener("mousemove", move)
-    window.addEventListener("mouseover", enter)
-    window.addEventListener("mouseout", leave)
-    return () => {
-      window.removeEventListener("mousemove", move)
-      window.removeEventListener("mouseover", enter)
-      window.removeEventListener("mouseout", leave)
-    }
-  }, [])
-
-  return (
-    <div
-      ref={cursorRef}
-      className="pointer-events-none fixed z-[9999] -translate-x-1/2 -translate-y-1/2 hidden md:flex items-center justify-center transition-all duration-200"
-      style={{ left: "-100px", top: "-100px" }}
-    >
-      <div
-        className={`rounded-full bg-white mix-blend-difference flex items-center justify-center transition-all duration-300 ${
-          isImage ? "w-20 h-20" : isLink ? "w-5 h-5" : "w-3 h-3"
-        }`}
-      >
-        {isImage && (
-          <span
-            className="text-black text-xs font-semibold tracking-widest"
-            style={{ fontFamily: "var(--font-display)" }}
-          >
-            VIEW
-          </span>
-        )}
-      </div>
-    </div>
-  )
+function BrandLogo({ className = "" }: { className?: string }) {
+  return <span className={`brand-logo ${className}`}><img src={logoSrc} alt="LZR Fotografia" /></span>
 }
 
 // ─── NAV ──────────────────────────────────────────────────────────────────────
@@ -126,38 +79,46 @@ function Navbar() {
     return () => window.removeEventListener("scroll", onScroll)
   }, [])
 
-  const links = ["WORK", "ABOUT", "SERVICES", "CONTACT"]
+  useEffect(() => {
+    if (!menuOpen) return
+    const previous = document.body.style.overflow
+    document.body.style.overflow = "hidden"
+    const close = (event: KeyboardEvent) => { if (event.key === "Escape") setMenuOpen(false) }
+    const desktop = window.matchMedia("(min-width: 768px)")
+    const resize = () => { if (desktop.matches) setMenuOpen(false) }
+    window.addEventListener("keydown", close)
+    desktop.addEventListener("change", resize)
+    return () => { document.body.style.overflow = previous; window.removeEventListener("keydown", close); desktop.removeEventListener("change", resize) }
+  }, [menuOpen])
+
+  const links = [{ id: "work", label: "PORTFÓLIO" }, { id: "about", label: "SOBRE" }, { id: "services", label: "SERVIÇOS" }, { id: "contact", label: "CONTATO" }]
 
   return (
     <>
       <motion.nav
         className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 md:px-12 transition-all duration-500 ${
-          scrolled ? "py-4 bg-[#0b0b0b]/90 backdrop-blur-sm border-b border-white/[0.06]" : "py-8"
+          scrolled ? "py-3 bg-[#212121]/95 backdrop-blur-xl border-b border-white/10" : "py-4 bg-[#212121]/80 backdrop-blur-xl border-b border-white/10"
         }`}
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, delay: 0.2 }}
       >
         {/* Logo */}
-        <a href="#" aria-label="LZR Photography home" className="flex items-center" data-cursor-link>
-          <img
-            src={logoSrc}
-            alt="LZR Photography logo"
-            className={`object-contain transition-all duration-500 ${scrolled ? "h-9" : "h-11"}`}
-          />
+        <a href="#home" aria-label="LZR Fotografia — início" className="flex items-center" data-cursor-link>
+          <BrandLogo />
         </a>
 
         {/* Desktop links */}
         <div className="hidden md:flex items-center gap-10">
           {links.map((l) => (
             <a
-              key={l}
-              href={`#${l.toLowerCase()}`}
+              key={l.id}
+              href={`#${l.id}`}
               className="text-xs tracking-[0.25em] text-white/50 hover:text-white transition-colors duration-300"
               style={{ fontFamily: "var(--font-display)" }}
               data-cursor-link
             >
-              {l}
+              {l.label}
             </a>
           ))}
         </div>
@@ -166,11 +127,11 @@ function Navbar() {
         <div className="hidden md:flex">
           <a
             href="#contact"
-            className="text-xs tracking-[0.25em] text-white/80 hover:text-white border border-white/20 hover:border-[#E85508] hover:text-[#E85508] px-6 py-2.5 transition-all duration-300"
+            className="text-xs tracking-[0.25em] text-white/80 hover:text-white border border-white/20 hover:border-[#FF6C00] hover:text-[#FF6C00] px-6 py-2.5 transition-all duration-300"
             style={{ fontFamily: "var(--font-display)" }}
             data-cursor-link
           >
-            {"LET'S TALK"}
+            {"VAMOS CONVERSAR"}
           </a>
         </div>
 
@@ -178,7 +139,9 @@ function Navbar() {
         <button
           className="md:hidden w-9 h-9 flex flex-col items-end justify-center gap-[6px]"
           onClick={() => setMenuOpen(!menuOpen)}
-          aria-label="Toggle menu"
+          aria-label={menuOpen ? "Fechar menu" : "Abrir menu"}
+          aria-expanded={menuOpen}
+          aria-controls="mobile-menu"
         >
           <span className={`block h-px bg-white transition-all duration-300 ${menuOpen ? "w-6 -rotate-45 translate-y-[8px]" : "w-6"}`} />
           <span className={`block h-px bg-white transition-all duration-300 ${menuOpen ? "w-0 opacity-0" : "w-4"}`} />
@@ -190,19 +153,19 @@ function Navbar() {
       <AnimatePresence>
         {menuOpen && (
           <motion.div
-            className="fixed inset-0 z-40 bg-[#0b0b0b] flex flex-col items-center justify-center md:hidden"
+            id="mobile-menu" role="navigation" aria-label="Navegação no celular" className="fixed inset-0 z-40 bg-[#181818] flex flex-col items-center justify-center md:hidden"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
           >
             <div className="mb-12">
-              <img src={logoSrc} alt="LZR Photography" className="h-14 object-contain" />
+              <BrandLogo />
             </div>
             {links.map((l, i) => (
               <motion.a
-                key={l}
-                href={`#${l.toLowerCase()}`}
+                key={l.id}
+                href={`#${l.id}`}
                 onClick={() => setMenuOpen(false)}
                 className="block text-5xl font-black text-white/80 hover:text-white py-4 tracking-tight transition-colors"
                 style={{ fontFamily: "var(--font-display)" }}
@@ -210,19 +173,19 @@ function Navbar() {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: i * 0.08 + 0.1 }}
               >
-                {l}
+                {l.label}
               </motion.a>
             ))}
             <motion.a
               href="#contact"
               onClick={() => setMenuOpen(false)}
-              className="mt-8 text-sm tracking-[0.25em] text-[#E85508] border border-[#E85508]/40 px-8 py-3"
+              className="mt-8 text-sm tracking-[0.25em] text-[#FF6C00] border border-[#FF6C00]/40 px-8 py-3"
               style={{ fontFamily: "var(--font-display)" }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5 }}
             >
-              {"LET'S TALK"}
+              {"VAMOS CONVERSAR"}
             </motion.a>
           </motion.div>
         )}
@@ -234,102 +197,21 @@ function Navbar() {
 // ─── HERO ─────────────────────────────────────────────────────────────────────
 
 function Hero() {
-  const ref = useRef<HTMLDivElement>(null)
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] })
-  const imageY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"])
-  const imageScale = useTransform(scrollYProgress, [0, 1], [1, 1.1])
-  const textY = useTransform(scrollYProgress, [0, 1], ["0%", "60%"])
-  const opacity = useTransform(scrollYProgress, [0, 0.7], [1, 0])
-
   return (
-    <div ref={ref} className="relative h-screen overflow-hidden bg-[#0b0b0b]">
-      {/* Background image with parallax */}
-      <motion.div
-        className="absolute inset-0"
-        style={{ y: imageY, scale: imageScale }}
-      >
-        <img
-          src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=1800&h=1200&fit=crop&auto=format"
-          alt="Dramatic misty mountain landscape"
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0b0b0b]/60 via-[#0b0b0b]/20 to-[#0b0b0b]" />
-      </motion.div>
-
-      {/* Text content */}
-      <motion.div
-        className="absolute inset-0 flex flex-col justify-end px-8 md:px-16 pb-24"
-        style={{ y: textY, opacity }}
-      >
-        <motion.div
-          initial={{ y: 40, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 1.2, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        >
-          <p
-            className="text-xs tracking-[0.4em] text-[#E85508] mb-6 uppercase"
-            style={{ fontFamily: "var(--font-display)" }}
-          >
-            Visual Stories
-          </p>
-          <h1
-            className="text-[12vw] md:text-[9vw] font-black leading-[0.85] text-white uppercase tracking-tight"
-            style={{ fontFamily: "var(--font-display)" }}
-          >
-            LZR
-            <br />
-            <span className="text-white/20">Photography</span>
-          </h1>
-        </motion.div>
-
-        <motion.div
-          className="mt-10 flex flex-col sm:flex-row gap-6 sm:items-center"
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 1, delay: 1 }}
-        >
-          <a
-            href="#work"
-            className="inline-flex items-center gap-4 text-xs tracking-[0.3em] text-white/70 hover:text-white transition-colors group"
-            style={{ fontFamily: "var(--font-display)" }}
-            data-cursor-link
-          >
-            <span className="block w-12 h-px bg-white/30 group-hover:bg-[#E85508] group-hover:w-20 transition-all duration-500" />
-            SELECTED WORK
-          </a>
-          <span className="hidden sm:block w-px h-4 bg-white/20" />
-          <p
-            className="text-xs tracking-[0.2em] text-white/30"
-            style={{ fontFamily: "var(--font-display)" }}
-          >
-            AVAILABLE FOR COMMISSIONS · 2026
-          </p>
-        </motion.div>
-      </motion.div>
-
-      {/* Scroll indicator */}
-      <motion.div
-        className="absolute bottom-10 right-10 hidden md:flex flex-col items-center gap-3"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.5 }}
-        style={{ opacity }}
-      >
-        <span
-          className="text-[10px] tracking-[0.35em] text-white/30 [writing-mode:vertical-lr] rotate-180"
-          style={{ fontFamily: "var(--font-display)" }}
-        >
-          SCROLL
-        </span>
-        <div className="w-px h-16 bg-white/10 relative overflow-hidden">
-          <motion.div
-            className="absolute top-0 left-0 w-full bg-[#E85508]"
-            animate={{ height: ["0%", "100%"], top: ["0%", "100%"] }}
-            transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
-          />
+    <section id="home" className="hero">
+      <img className="hero-image" src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=1800&h=1200&fit=crop&auto=format" alt="Montanha refletida em um lago tranquilo ao amanhecer" fetchPriority="high" />
+      <div className="hero-shade" />
+      <div className="hero-content">
+        <p className="eyebrow"><span /> LZR FOTOGRAFIA · HISTÓRIAS EM IMAGENS</p>
+        <h1>Certos momentos.<br /><em>Ficam para sempre.</em></h1>
+        <p className="hero-description">Momentos reais. Imagens com propósito. Fotografia que transforma sentimentos em lembranças para guardar.</p>
+        <div className="hero-actions">
+          <a className="primary-button" href="#work">EXPLORE O PORTFÓLIO <span aria-hidden="true">↗</span></a>
+          <a className="secondary-link" href="#contact">VAMOS CRIAR JUNTOS <span aria-hidden="true">→</span></a>
         </div>
-      </motion.div>
-    </div>
+      </div>
+      <div className="hero-bottom"><span>RETRATOS · CASAMENTOS · EDITORIAL</span><a href="#work">ROLE PARA DESCOBRIR ↓</a></div>
+    </section>
   )
 }
 
@@ -371,6 +253,14 @@ function LightboxModal({ items, activeId, onClose, onNav }: {
   onClose: () => void
   onNav: (id: number) => void
 }) {
+  const dialogRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    const previous = document.activeElement as HTMLElement | null
+    const overflow = document.body.style.overflow
+    document.body.style.overflow = "hidden"
+    dialogRef.current?.focus()
+    return () => { document.body.style.overflow = overflow; previous?.focus() }
+  }, [])
   const item = items.find((p) => p.id === activeId)!
   const idx = items.findIndex((p) => p.id === activeId)
 
@@ -386,7 +276,9 @@ function LightboxModal({ items, activeId, onClose, onNav }: {
 
   return (
     <motion.div
-      className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center"
+      ref={dialogRef} role="dialog" aria-modal="true" aria-label="Visualizador de fotos" tabIndex={-1}
+      onKeyDown={(e) => { if (e.key === "Tab") { const buttons = dialogRef.current?.querySelectorAll<HTMLButtonElement>("button"); if (!buttons?.length) return; if (e.shiftKey && (document.activeElement === buttons[0] || document.activeElement === dialogRef.current)) { e.preventDefault(); buttons[buttons.length - 1].focus() } else if (!e.shiftKey && (document.activeElement === buttons[buttons.length - 1] || document.activeElement === dialogRef.current)) { e.preventDefault(); buttons[0].focus() } } }}
+      className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -408,7 +300,7 @@ function LightboxModal({ items, activeId, onClose, onNav }: {
         />
         <div className="mt-4 flex justify-between items-end">
           <div>
-            <p className="text-xs tracking-[0.3em] text-[#E85508]" style={{ fontFamily: "var(--font-display)" }}>
+            <p className="text-xs tracking-[0.3em] text-[#FF6C00]" style={{ fontFamily: "var(--font-display)" }}>
               {item.category} · {item.year}
             </p>
             <p className="text-2xl font-black text-white uppercase" style={{ fontFamily: "var(--font-display)" }}>
@@ -418,18 +310,18 @@ function LightboxModal({ items, activeId, onClose, onNav }: {
           <div className="flex gap-3">
             <button
               onClick={() => onNav(items[(idx - 1 + items.length) % items.length].id)}
-              className="w-10 h-10 border border-white/20 hover:border-[#E85508] flex items-center justify-center text-white/60 hover:text-[#E85508] transition-all"
-              aria-label="Previous image"
+              className="w-10 h-10 border border-white/20 hover:border-[#FF6C00] flex items-center justify-center text-white/60 hover:text-[#FF6C00] transition-all"
+              aria-label="Foto anterior"
             >←</button>
             <button
               onClick={() => onNav(items[(idx + 1) % items.length].id)}
-              className="w-10 h-10 border border-white/20 hover:border-[#E85508] flex items-center justify-center text-white/60 hover:text-[#E85508] transition-all"
-              aria-label="Next image"
+              className="w-10 h-10 border border-white/20 hover:border-[#FF6C00] flex items-center justify-center text-white/60 hover:text-[#FF6C00] transition-all"
+              aria-label="Próxima foto"
             >→</button>
             <button
               onClick={onClose}
               className="w-10 h-10 border border-white/20 hover:border-red-500/50 flex items-center justify-center text-white/50 hover:text-red-400 transition-all"
-              aria-label="Close lightbox"
+              aria-label="Fechar foto"
             >✕</button>
           </div>
         </div>
@@ -438,38 +330,38 @@ function LightboxModal({ items, activeId, onClose, onNav }: {
   )
 }
 
-// ─── PORTFOLIO ────────────────────────────────────────────────────────────────
+// ─── PORTFÓLIO ────────────────────────────────────────────────────────────────
 
 function Portfolio() {
   const [lightbox, setLightbox] = useState<number | null>(null)
 
   return (
-    <section id="work" className="py-28 md:py-40 px-8 md:px-16 bg-[#0b0b0b]">
+    <section id="work" className="py-28 md:py-40 px-8 md:px-16 bg-[#181818]">
       <Reveal>
         <div className="flex items-end justify-between mb-16 md:mb-24">
           <div>
             <p
-              className="text-xs tracking-[0.35em] text-[#E85508] mb-4"
+              className="text-xs tracking-[0.35em] text-[#FF6C00] mb-4"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              PORTFOLIO
+              PORTFÓLIO
             </p>
             <h2
               className="text-5xl md:text-7xl font-black uppercase leading-none text-white"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              Selected
+              Trabalhos
               <br />
-              Work
+              selecionados
             </h2>
           </div>
           <p
-            className="hidden md:block text-sm text-white/30 max-w-xs text-right leading-relaxed"
+            className="hidden md:block text-sm text-white/60 max-w-xs text-right leading-relaxed"
             style={{ fontFamily: "var(--font-body)" }}
           >
-            A curated selection
+            Uma seleção especial
             <br />
-            of visual stories.
+            de histórias em imagens.
           </p>
         </div>
       </Reveal>
@@ -479,7 +371,9 @@ function Portfolio() {
         {portfolioItems.map((item, i) => (
           <Reveal key={item.id} delay={i * 0.08} className={item.span}>
             <div
-              className="relative group cursor-none overflow-hidden bg-[#141414] h-full"
+              className="portfolio-card relative group overflow-hidden bg-[#262626] h-full"
+              role="button" tabIndex={0} aria-label={`Ver ${item.title}`}
+              onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setLightbox(item.id) } }}
               data-cursor-image
               onClick={() => setLightbox(item.id)}
             >
@@ -500,7 +394,7 @@ function Portfolio() {
                 </p>
                 <div>
                   <p
-                    className="text-xs tracking-[0.25em] text-[#E85508] mb-1"
+                    className="text-xs tracking-[0.25em] text-[#FF6C00] mb-1"
                     style={{ fontFamily: "var(--font-display)" }}
                   >
                     {item.category} · {item.year}
@@ -512,12 +406,12 @@ function Portfolio() {
                     {item.title}
                   </p>
                   <div className="mt-3 flex items-center gap-3">
-                    <span className="block w-8 h-px bg-[#E85508]" />
+                    <span className="block w-8 h-px bg-[#FF6C00]" />
                     <span
                       className="text-[10px] tracking-[0.3em] text-white/60"
                       style={{ fontFamily: "var(--font-display)" }}
                     >
-                      VIEW PROJECT
+                      VER PROJETO
                     </span>
                   </div>
                 </div>
@@ -539,28 +433,28 @@ function Portfolio() {
 
 function About() {
   return (
-    <section id="about" className="py-28 md:py-40 px-8 md:px-16 bg-[#0e0e0e]">
+    <section id="about" className="py-28 md:py-40 px-8 md:px-16 bg-[#212121]">
       <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 md:gap-24 items-center">
         {/* Image */}
         <Reveal>
           <div
-            className="relative aspect-[3/4] bg-[#141414] overflow-hidden"
+            className="relative aspect-[3/4] bg-[#262626] overflow-hidden"
             data-cursor-image
           >
             <img
               src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=1100&fit=crop&auto=format"
-              alt="Photographer at work"
+              alt="Retrato ao ar livre"
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0b0b0b]/40 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#181818]/40 to-transparent" />
             {/* Corner accent */}
             <div className="absolute bottom-6 left-6">
-              <div className="w-10 h-px bg-[#E85508] mb-2" />
+              <div className="w-10 h-px bg-[#FF6C00] mb-2" />
               <p
                 className="text-xs tracking-[0.3em] text-white/50"
                 style={{ fontFamily: "var(--font-display)" }}
               >
-                BEHIND THE LENS
+                POR TRÁS DAS LENTES
               </p>
             </div>
           </div>
@@ -570,10 +464,10 @@ function About() {
         <div>
           <Reveal>
             <p
-              className="text-xs tracking-[0.35em] text-[#E85508] mb-6"
+              className="text-xs tracking-[0.35em] text-[#FF6C00] mb-6"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              ABOUT
+              SOBRE
             </p>
           </Reveal>
           <Reveal delay={0.1}>
@@ -581,9 +475,9 @@ function About() {
               className="text-5xl md:text-6xl font-black uppercase leading-[0.9] text-white mb-8"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              [PHOTOGRAPHER
+              Um olhar
               <br />
-              NAME]
+              sensível.
             </h2>
           </Reveal>
           <Reveal delay={0.15}>
@@ -591,15 +485,14 @@ function About() {
               className="text-white/50 leading-relaxed mb-4 text-sm"
               style={{ fontFamily: "var(--font-body)" }}
             >
-              Visual storyteller, photographer and creative director based in [City, Country]. Specializing in
-              cinematic imagery that captures raw emotion and authentic moments.
+              Na LZR Fotografia, o extraordinário está no cotidiano. Um espaço para
+              imagens cinematográficas que capturam emoções e momentos autênticos.
             </p>
             <p
-              className="text-white/30 leading-relaxed text-sm"
+              className="text-white/60 leading-relaxed text-sm"
               style={{ fontFamily: "var(--font-body)" }}
             >
-              [Replace this text with your personal biography. Talk about your journey, your philosophy,
-              and what drives your creative vision.]
+              De um olhar sereno a uma celebração única, cada ensaio começa com uma conexão. O resultado: fotografias com presença, personalidade e sentimento.
             </p>
           </Reveal>
 
@@ -607,9 +500,9 @@ function About() {
           <Reveal delay={0.2}>
             <div className="mt-12 grid grid-cols-3 gap-8 border-t border-white/[0.06] pt-10">
               {[
-                { val: "10+", label: "YEARS OF EXPERIENCE" },
-                { val: "100+", label: "PROJECTS" },
-                { val: "40+", label: "AWARDS" },
+                { val: "01", label: "ATENDIMENTO PESSOAL" },
+                { val: "02", label: "DIREÇÃO CRIATIVA" },
+                { val: "03", label: "EDIÇÃO CUIDADOSA" },
               ].map((s) => (
                 <div key={s.label}>
                   <p
@@ -619,7 +512,7 @@ function About() {
                     {s.val}
                   </p>
                   <p
-                    className="text-[10px] tracking-[0.25em] text-white/30 leading-snug"
+                    className="text-[10px] tracking-[0.25em] text-white/60 leading-snug"
                     style={{ fontFamily: "var(--font-display)" }}
                   >
                     {s.label}
@@ -637,44 +530,37 @@ function About() {
 // ─── SERVICES ─────────────────────────────────────────────────────────────────
 
 function Services() {
-  const [hovered, setHovered] = useState<number | null>(null)
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
-
-  const onMouse = useCallback((e: React.MouseEvent) => {
-    setMousePos({ x: e.clientX, y: e.clientY })
-  }, [])
-
   return (
-    <section id="services" className="py-28 md:py-40 px-8 md:px-16 bg-[#0b0b0b]" onMouseMove={onMouse}>
+    <section id="services" className="py-28 md:py-40 px-8 md:px-16 bg-[#181818]">
       <Reveal>
         <div className="mb-16 md:mb-24">
           <p
-            className="text-xs tracking-[0.35em] text-[#E85508] mb-4"
+            className="text-xs tracking-[0.35em] text-[#FF6C00] mb-4"
             style={{ fontFamily: "var(--font-display)" }}
           >
-            WHAT I DO
+            O QUE FAÇO
           </p>
           <h2
             className="text-5xl md:text-7xl font-black uppercase leading-none text-white"
             style={{ fontFamily: "var(--font-display)" }}
           >
-            Services
+            Serviços
           </h2>
         </div>
       </Reveal>
 
       <div className="border-t border-white/[0.06]">
-        {services.map((s, i) => (
-          <div
+        {services.map((s) => (
+          <a
+            href="#contact"
             key={s.number}
-            className="group border-b border-white/[0.06] py-7 md:py-9 flex items-center justify-between gap-6 cursor-none transition-all duration-300 hover:pl-4"
-            onMouseEnter={() => setHovered(i)}
-            onMouseLeave={() => setHovered(null)}
+            className="group border-b border-white/[0.06] py-7 md:py-9 flex items-center justify-between gap-6 service-row transition-colors duration-300"
             data-cursor-link
           >
+            <img src={s.url} alt="" loading="lazy" className="service-thumbnail" />
             <div className="flex items-center gap-6 md:gap-10 flex-1 min-w-0">
               <span
-                className="text-xs tracking-[0.2em] text-white/20 group-hover:text-[#E85508] transition-colors flex-shrink-0"
+                className="text-xs tracking-[0.2em] text-white/60 group-hover:text-[#FF6C00] transition-colors flex-shrink-0"
                 style={{ fontFamily: "var(--font-display)" }}
               >
                 {s.number}
@@ -687,46 +573,21 @@ function Services() {
               </span>
             </div>
             <p
-              className="hidden md:block text-sm text-white/30 group-hover:text-white/50 transition-colors max-w-xs text-right"
+              className="hidden md:block text-sm text-white/60 group-hover:text-white/50 transition-colors max-w-xs text-right"
               style={{ fontFamily: "var(--font-body)" }}
             >
               {s.desc}
             </p>
             <span
-              className="text-white/20 group-hover:text-[#E85508] transition-all duration-300 transform group-hover:translate-x-1 flex-shrink-0"
+              className="text-white/60 group-hover:text-[#FF6C00] transition-all duration-300 transform group-hover:translate-x-1 flex-shrink-0"
               style={{ fontFamily: "var(--font-display)" }}
             >
               →
             </span>
-          </div>
+          </a>
         ))}
       </div>
 
-      {/* Floating preview image */}
-      {hovered !== null && (
-        <div
-          className="pointer-events-none fixed z-40 hidden md:block"
-          style={{
-            left: mousePos.x + 24,
-            top: mousePos.y - 80,
-            transition: "left 0.1s, top 0.1s",
-          }}
-        >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.92 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="w-56 h-36 overflow-hidden shadow-2xl"
-          >
-            <img
-              src={services[hovered].url}
-              alt={services[hovered].title}
-              className="w-full h-full object-cover"
-            />
-          </motion.div>
-        </div>
-      )}
     </section>
   )
 }
@@ -735,27 +596,27 @@ function Services() {
 
 function Process() {
   const steps = [
-    { n: "01", title: "DISCOVER", desc: "We start with a deep conversation — your vision, your audience, the feeling you want to capture." },
-    { n: "02", title: "CREATE", desc: "Direction, mood boards, and creative strategy come together into a visual blueprint." },
-    { n: "03", title: "CAPTURE", desc: "The shoot itself: meticulous, present, unhurried. Every frame intentional." },
-    { n: "04", title: "DELIVER", desc: "Edited, curated, and delivered. Your gallery, ready to use across every medium." },
+    { n: "01", title: "DESCOBRIR", desc: "Tudo começa com uma boa conversa: sua visão, seu público e o sentimento que você quer registrar." },
+    { n: "02", title: "CRIAR", desc: "Direção, referências e estratégia criativa se encontram para dar forma à sua ideia." },
+    { n: "03", title: "REGISTRAR", desc: "O ensaio: atenção aos detalhes, presença e calma. Cada imagem tem um propósito." },
+    { n: "04", title: "ENTREGAR", desc: "Fotos selecionadas, editadas e entregues. Sua galeria pronta para compartilhar e guardar." },
   ]
 
   return (
-    <section className="py-28 md:py-40 px-8 md:px-16 bg-[#0e0e0e]">
+    <section className="py-28 md:py-40 px-8 md:px-16 bg-[#212121]">
       <Reveal>
         <div className="mb-16 md:mb-24">
           <p
-            className="text-xs tracking-[0.35em] text-[#E85508] mb-4"
+            className="text-xs tracking-[0.35em] text-[#FF6C00] mb-4"
             style={{ fontFamily: "var(--font-display)" }}
           >
-            HOW IT WORKS
+            COMO FUNCIONA
           </p>
           <h2
             className="text-5xl md:text-7xl font-black uppercase leading-none text-white"
             style={{ fontFamily: "var(--font-display)" }}
           >
-            The Process
+            O processo
           </h2>
         </div>
       </Reveal>
@@ -763,14 +624,14 @@ function Process() {
       <div className="grid md:grid-cols-4 gap-px bg-white/[0.06]">
         {steps.map((s, i) => (
           <Reveal key={s.n} delay={i * 0.12}>
-            <div className="bg-[#0e0e0e] p-8 md:p-10 h-full">
+            <div className="bg-[#212121] p-8 md:p-10 h-full">
               <p
                 className="text-5xl font-black text-white/[0.07] mb-8 leading-none"
                 style={{ fontFamily: "var(--font-display)" }}
               >
                 {s.n}
               </p>
-              <div className="w-6 h-px bg-[#E85508] mb-6" />
+              <div className="w-6 h-px bg-[#FF6C00] mb-6" />
               <p
                 className="text-2xl font-black text-white uppercase mb-4 leading-none"
                 style={{ fontFamily: "var(--font-display)" }}
@@ -778,7 +639,7 @@ function Process() {
                 {s.title}
               </p>
               <p
-                className="text-sm text-white/40 leading-relaxed"
+                className="text-sm text-white/65 leading-relaxed"
                 style={{ fontFamily: "var(--font-body)" }}
               >
                 {s.desc}
@@ -804,7 +665,7 @@ function CinematicQuote() {
       <motion.div className="absolute inset-0" style={{ scale }}>
         <img
           src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=1800&h=1200&fit=crop&auto=format"
-          alt="Dark ocean waves"
+          alt="Vista de Paris ao entardecer"
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-black/60" />
@@ -819,11 +680,11 @@ function CinematicQuote() {
             className="text-4xl md:text-6xl lg:text-7xl font-black text-white uppercase leading-tight tracking-tight"
             style={{ fontFamily: "var(--font-display)" }}
           >
-            "Every frame
+            "Cada imagem
             <br />
-            tells a story."
+            conta uma história."
           </p>
-          <div className="mt-6 w-10 h-px bg-[#E85508] mx-auto" />
+          <div className="mt-6 w-10 h-px bg-[#FF6C00] mx-auto" />
         </Reveal>
       </motion.div>
     </div>
@@ -833,96 +694,51 @@ function CinematicQuote() {
 // ─── HORIZONTAL GALLERY ───────────────────────────────────────────────────────
 
 function HorizontalGallery() {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end end"] })
-  const x = useTransform(scrollYProgress, [0, 1], ["0%", `-${(galleryImages.length - 1) * 100 / galleryImages.length}%`])
-
-  return (
-    <section className="bg-[#0b0b0b]">
-      <div ref={containerRef} style={{ height: `${galleryImages.length * 60}vh` }} className="relative">
-        <div className="sticky top-0 h-screen overflow-hidden flex flex-col justify-center">
-          <Reveal>
-            <div className="px-8 md:px-16 mb-8">
-              <p
-                className="text-xs tracking-[0.35em] text-[#E85508]"
-                style={{ fontFamily: "var(--font-display)" }}
-              >
-                GALLERY — SCROLL TO EXPLORE
-              </p>
-            </div>
-          </Reveal>
-          <div className="overflow-hidden">
-            <motion.div
-              className="flex"
-              style={{ x, width: `${galleryImages.length * 100}%` }}
-            >
-              {galleryImages.map((img, i) => (
-                <div
-                  key={i}
-                  className="relative"
-                  style={{ width: `${100 / galleryImages.length}%` }}
-                  data-cursor-image
-                >
-                  <div className="mx-3 relative aspect-[16/9] overflow-hidden bg-[#141414]">
-                    <img
-                      src={img.url}
-                      alt={img.alt}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute bottom-4 left-5">
-                      <p
-                        className="text-xs tracking-[0.25em] text-white/40"
-                        style={{ fontFamily: "var(--font-display)" }}
-                      >
-                        {String(i + 1).padStart(2, "0")} / {String(galleryImages.length).padStart(2, "0")}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </motion.div>
-          </div>
-        </div>
-      </div>
-    </section>
-  )
+  const [active, setActive] = useState(0)
+  const photo = galleryImages[active]
+  return <section className="gallery-section" aria-label="Galeria de paisagens">
+    <div className="gallery-heading"><div><p className="eyebrow">ENTRE MOMENTOS</p><h2>Uma nova perspectiva.</h2></div>
+      <div className="gallery-controls"><button aria-label="Paisagem anterior" onClick={() => setActive((active - 1 + galleryImages.length) % galleryImages.length)}>←</button><button aria-label="Próxima paisagem" onClick={() => setActive((active + 1) % galleryImages.length)}>→</button></div>
+    </div>
+    <figure><img src={photo.url} alt={photo.alt} loading="lazy" /><figcaption aria-live="polite"><span>{photo.alt}</span><span>{String(active + 1).padStart(2, "0")} / 05</span></figcaption></figure>
+  </section>
 }
 
 // ─── CTA ──────────────────────────────────────────────────────────────────────
 
 function CTA() {
   return (
-    <section className="py-28 md:py-48 px-8 md:px-16 bg-[#0e0e0e] text-center">
+    <section className="py-28 md:py-48 px-8 md:px-16 bg-[#212121] text-center">
       <Reveal>
         <p
-          className="text-xs tracking-[0.4em] text-[#E85508] mb-8 uppercase"
+          className="text-xs tracking-[0.4em] text-[#FF6C00] mb-8 uppercase"
           style={{ fontFamily: "var(--font-display)" }}
         >
-          Work Together
+          Vamos trabalhar juntos
         </p>
         <h2
           className="text-[10vw] md:text-[7vw] font-black uppercase leading-none text-white mb-8"
           style={{ fontFamily: "var(--font-display)" }}
         >
-          {"Let's Create"}
+          {"Vamos criar"}
           <br />
-          <span className="text-white/20">Something</span>
+          <span className="text-white/60">algo</span>
           <br />
-          Beautiful.
+          inesquecível.
         </h2>
         <p
-          className="text-white/30 text-sm mb-14 max-w-sm mx-auto leading-relaxed"
+          className="text-white/60 text-sm mb-14 max-w-sm mx-auto leading-relaxed"
           style={{ fontFamily: "var(--font-body)" }}
         >
-          Available for selected projects, commissions and collaborations.
+          Disponível para projetos especiais, ensaios e colaborações.
         </p>
         <a
           href="#contact"
-          className="inline-flex items-center gap-5 border border-white/20 hover:border-[#E85508] text-white hover:text-[#E85508] px-10 py-4 text-sm tracking-[0.3em] transition-all duration-400 group"
+          className="inline-flex items-center gap-5 border border-white/20 hover:border-[#FF6C00] text-white hover:text-[#FF6C00] px-10 py-4 text-sm tracking-[0.3em] transition-all duration-400 group"
           style={{ fontFamily: "var(--font-display)" }}
           data-cursor-link
         >
-          START A PROJECT
+          COMECE UM PROJETO
           <span className="transition-transform duration-300 group-hover:translate-x-2">→</span>
         </a>
       </Reveal>
@@ -942,36 +758,36 @@ function Contact() {
   }
 
   const inputClass =
-    "w-full bg-transparent border-b border-white/[0.12] focus:border-[#E85508] py-4 text-white/80 text-sm outline-none placeholder:text-white/20 transition-colors"
+    "w-full bg-transparent border-b border-white/[0.12] focus:border-[#FF6C00] py-4 text-white/80 text-sm outline-none placeholder:text-white/60 transition-colors"
 
   return (
-    <section id="contact" className="py-28 md:py-40 px-8 md:px-16 bg-[#0b0b0b]">
+    <section id="contact" className="py-28 md:py-40 px-8 md:px-16 bg-[#181818]">
       <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 md:gap-28">
         <div>
           <Reveal>
             <p
-              className="text-xs tracking-[0.35em] text-[#E85508] mb-6"
+              className="text-xs tracking-[0.35em] text-[#FF6C00] mb-6"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              GET IN TOUCH
+              ENTRE EM CONTATO
             </p>
             <h2
               className="text-5xl md:text-6xl font-black uppercase leading-none text-white mb-10"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              {"Let's"}
+              {"Vamos"}
               <br />
-              Talk
+              conversar
             </h2>
             <div className="space-y-5">
               {[
-                { label: "EMAIL", val: "[email@lzrphoto.com]" },
-                { label: "PHONE", val: "[+55 00 00000-0000]" },
-                { label: "BASED IN", val: "[City, Country]" },
+                { label: "E-MAIL", val: "Em breve" },
+                { label: "TELEFONE", val: "Em breve" },
+                { label: "ATENDIMENTO", val: "Com agendamento" },
               ].map((info) => (
                 <div key={info.label}>
                   <p
-                    className="text-[10px] tracking-[0.3em] text-white/30 mb-1"
+                    className="text-[10px] tracking-[0.3em] text-white/60 mb-1"
                     style={{ fontFamily: "var(--font-display)" }}
                   >
                     {info.label}
@@ -985,44 +801,33 @@ function Contact() {
                 </div>
               ))}
             </div>
-            <div className="mt-10 flex gap-5">
-              {["Instagram", "Behance", "LinkedIn"].map((s) => (
-                <a
-                  key={s}
-                  href="#"
-                  className="text-xs tracking-[0.2em] text-white/30 hover:text-[#E85508] transition-colors"
-                  style={{ fontFamily: "var(--font-display)" }}
-                  data-cursor-link
-                >
-                  {s}
-                </a>
-              ))}
-            </div>
+
           </Reveal>
         </div>
 
         <Reveal delay={0.1}>
           {sent ? (
-            <div className="flex flex-col justify-center h-full">
-              <div className="w-10 h-px bg-[#E85508] mb-6" />
+            <div role="status" className="flex flex-col justify-center h-full">
+              <div className="w-10 h-px bg-[#FF6C00] mb-6" />
               <p
                 className="text-3xl font-black text-white uppercase mb-4"
                 style={{ fontFamily: "var(--font-display)" }}
               >
-                Message sent.
+                Envio indisponível.
               </p>
-              <p className="text-sm text-white/40" style={{ fontFamily: "var(--font-body)" }}>
-                Thank you for reaching out. {"I'll"} be in touch shortly.
+              <p className="text-sm text-white/65" style={{ fontFamily: "var(--font-body)" }}>
+                Nosso canal de contato está sendo atualizado. Sua mensagem não foi enviada.
               </p>
             </div>
           ) : (
             <form onSubmit={submit} className="space-y-8">
+              <p className="text-sm text-white/60">O envio de pedidos está temporariamente indisponível enquanto atualizamos nosso canal de contato.</p>
               <div>
-                <label htmlFor="name" className="sr-only">Name</label>
+                <label htmlFor="name" className="sr-only">Nome</label>
                 <input
                   id="name"
                   type="text"
-                  placeholder="Name"
+                  placeholder="Nome"
                   required
                   className={inputClass}
                   style={{ fontFamily: "var(--font-body)" }}
@@ -1031,11 +836,11 @@ function Contact() {
                 />
               </div>
               <div>
-                <label htmlFor="email" className="sr-only">Email</label>
+                <label htmlFor="email" className="sr-only">E-mail</label>
                 <input
                   id="email"
                   type="email"
-                  placeholder="Email"
+                  placeholder="E-mail"
                   required
                   className={inputClass}
                   style={{ fontFamily: "var(--font-body)" }}
@@ -1044,11 +849,11 @@ function Contact() {
                 />
               </div>
               <div>
-                <label htmlFor="phone" className="sr-only">Phone</label>
+                <label htmlFor="phone" className="sr-only">Telefone</label>
                 <input
                   id="phone"
                   type="tel"
-                  placeholder="Phone (optional)"
+                  placeholder="Telefone (opcional)"
                   className={inputClass}
                   style={{ fontFamily: "var(--font-body)" }}
                   value={form.phone}
@@ -1056,7 +861,7 @@ function Contact() {
                 />
               </div>
               <div>
-                <label htmlFor="type" className="sr-only">Project type</label>
+                <label htmlFor="type" className="sr-only">Tipo de projeto</label>
                 <select
                   id="type"
                   required
@@ -1065,17 +870,17 @@ function Contact() {
                   value={form.type}
                   onChange={(e) => setForm({ ...form, type: e.target.value })}
                 >
-                  <option value="" disabled style={{ background: "#141414" }}>Project type</option>
-                  {["Wedding", "Portrait", "Event", "Editorial", "Commercial", "Branding", "Other"].map((t) => (
-                    <option key={t} value={t} style={{ background: "#141414" }}>{t}</option>
+                  <option value="" disabled style={{ background: "#262626" }}>Tipo de projeto</option>
+                  {["Casamento", "Retrato", "Evento", "Editorial", "Publicidade", "Marca pessoal", "Outro"].map((t) => (
+                    <option key={t} value={t} style={{ background: "#262626" }}>{t}</option>
                   ))}
                 </select>
               </div>
               <div>
-                <label htmlFor="message" className="sr-only">Message</label>
+                <label htmlFor="message" className="sr-only">Mensagem</label>
                 <textarea
                   id="message"
-                  placeholder="Tell me about your project..."
+                  placeholder="Conte um pouco sobre o seu projeto..."
                   rows={4}
                   className={`${inputClass} resize-none`}
                   style={{ fontFamily: "var(--font-body)" }}
@@ -1084,11 +889,11 @@ function Contact() {
                 />
               </div>
               <button
-                type="submit"
-                className="w-full border border-white/20 hover:border-[#E85508] text-white hover:text-[#E85508] py-4 text-xs tracking-[0.3em] transition-all duration-300 flex items-center justify-center gap-4 group"
+                type="submit" disabled
+                className="w-full border border-white/20 hover:border-[#FF6C00] text-white hover:text-[#FF6C00] py-4 text-xs tracking-[0.3em] transition-all duration-300 flex items-center justify-center gap-4 group"
                 style={{ fontFamily: "var(--font-display)" }}
               >
-                SEND MESSAGE
+                CONTATO EM BREVE
                 <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
               </button>
             </form>
@@ -1103,33 +908,33 @@ function Contact() {
 
 function Footer() {
   return (
-    <footer className="py-16 md:py-20 px-8 md:px-16 bg-[#0b0b0b] border-t border-white/[0.06]">
+    <footer className="py-16 md:py-20 px-8 md:px-16 bg-[#181818] border-t border-white/[0.06]">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-10 mb-14">
           <div>
-            <img src={logoSrc} alt="LZR Photography" className="h-12 object-contain mb-3" />
+            <BrandLogo />
             <p
-              className="text-[10px] tracking-[0.3em] text-white/25"
+              className="text-[10px] tracking-[0.3em] text-white/60"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              PHOTOGRAPHY / VISUAL STORIES
+              FOTOGRAFIA / HISTÓRIAS EM IMAGENS
             </p>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 text-right">
             {[
-              { label: "EMAIL", val: "[email@lzrphoto.com]" },
-              { label: "PHONE", val: "[+55 00 00000-0000]" },
-              { label: "LOCATION", val: "[City, Country]" },
+              { label: "E-MAIL", val: "Em breve" },
+              { label: "TELEFONE", val: "Em breve" },
+              { label: "ATENDIMENTO", val: "Com agendamento" },
             ].map((info) => (
               <div key={info.label}>
                 <p
-                  className="text-[9px] tracking-[0.3em] text-white/25 mb-1"
+                  className="text-[9px] tracking-[0.3em] text-white/60 mb-1"
                   style={{ fontFamily: "var(--font-display)" }}
                 >
                   {info.label}
                 </p>
                 <p
-                  className="text-xs text-white/40"
+                  className="text-xs text-white/65"
                   style={{ fontFamily: "var(--font-body)" }}
                 >
                   {info.val}
@@ -1141,30 +946,20 @@ function Footer() {
 
         <div className="border-t border-white/[0.06] pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p
-            className="text-[10px] tracking-[0.2em] text-white/20"
+            className="text-[10px] tracking-[0.2em] text-white/60"
             style={{ fontFamily: "var(--font-display)" }}
           >
-            © 2026 — ALL RIGHTS RESERVED
+            © 2026 — TODOS OS DIREITOS RESERVADOS
           </p>
           <div className="flex items-center gap-8">
-            {["Privacy", "Terms"].map((l) => (
-              <a
-                key={l}
-                href="#"
-                className="text-[10px] tracking-[0.2em] text-white/20 hover:text-white/50 transition-colors"
-                style={{ fontFamily: "var(--font-display)" }}
-                data-cursor-link
-              >
-                {l.toUpperCase()}
-              </a>
-            ))}
+
             <button
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-              className="text-[10px] tracking-[0.2em] text-white/20 hover:text-[#E85508] transition-colors"
+              className="text-[10px] tracking-[0.2em] text-white/60 hover:text-[#FF6C00] transition-colors"
               style={{ fontFamily: "var(--font-display)" }}
               data-cursor-link
             >
-              BACK TO TOP ↑
+              VOLTAR AO TOPO ↑
             </button>
           </div>
         </div>
@@ -1176,17 +971,13 @@ function Footer() {
 // ─── APP ──────────────────────────────────────────────────────────────────────
 
 export default function App() {
-  useEffect(() => {
-    document.documentElement.style.scrollBehavior = "smooth"
-    document.body.style.overflowX = "hidden"
-  }, [])
 
   return (
-    <div
-      className="bg-[#0b0b0b] text-[#ede9e3] min-h-screen md:cursor-none"
+    <MotionConfig reducedMotion="user"><div
+      className="bg-[#181818] text-[#ede9e3] min-h-screen"
       style={{ fontFamily: "var(--font-body)" }}
     >
-      <CustomCursor />
+      <a className="skip-link" href="#work">Pular para o conteúdo</a>
       <Navbar />
       <main>
         <Hero />
@@ -1200,6 +991,6 @@ export default function App() {
         <Contact />
       </main>
       <Footer />
-    </div>
+    </div></MotionConfig>
   )
 }
