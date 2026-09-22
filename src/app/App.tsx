@@ -1,64 +1,56 @@
-import { useState, useEffect, useRef, type ReactNode } from "react"
+import { useState, useEffect, useMemo, useRef, type ReactNode } from "react"
 import { motion, useScroll, useTransform, AnimatePresence, MotionConfig } from "motion/react"
 import logoSrc from "@/imports/LogoLuze-Photoroom (1).png"
 
 // ─── TYPES ────────────────────────────────────────────────────────────────────
 
+type WorkCategory = "Casamentos" | "Retratos" | "Editorial" | "Eventos" | "Marcas"
+
 interface PortfolioItem {
   id: number
   number: string
   title: string
-  category: string
+  category: WorkCategory
   year: string
   imageUrl: string
-  span: string
+  alt: string
+  layout: "feature" | "tall" | "wide" | "standard"
 }
 
-// ─── DATA ─────────────────────────────────────────────────────────────────────
+const photo = (id: string, width = 1400) =>
+  `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${width}&q=80`
+
+const categories = ["Todos", "Casamentos", "Retratos", "Editorial", "Eventos", "Marcas"] as const
 
 const portfolioItems: PortfolioItem[] = [
-  {
-    id: 1, number: "01", title: "Hora dourada", category: "CASAMENTOS", year: "2026",
-    imageUrl: "https://images.unsplash.com/photo-1519741497674-611481863552?w=900&h=1200&fit=crop&auto=format",
-    span: "md:row-span-2",
-  },
-  {
-    id: 2, number: "02", title: "Alma urbana", category: "RETRATOS", year: "2026",
-    imageUrl: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=800&h=600&fit=crop&auto=format",
-    span: "",
-  },
-  {
-    id: 3, number: "03", title: "Linhas e formas", category: "EDITORIAL", year: "2025",
-    imageUrl: "https://images.unsplash.com/photo-1509631179647-0177331693ae?w=800&h=600&fit=crop&auto=format",
-    span: "",
-  },
-  {
-    id: 4, number: "04", title: "Na natureza", category: "PAISAGENS", year: "2025",
-    imageUrl: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&h=700&fit=crop&auto=format",
-    span: "md:col-span-2",
-  },
-  {
-    id: 5, number: "05", title: "Inspiração", category: "PUBLICIDADE", year: "2026",
-    imageUrl: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=800&h=1000&fit=crop&auto=format",
-    span: "",
-  },
+  { id: 1, number: "01", title: "Hora dourada", category: "Casamentos", year: "2026", imageUrl: photo("1519741497674-611481863552", 1400), alt: "Casal de noivos em um momento íntimo", layout: "feature" },
+  { id: 2, number: "02", title: "A celebração", category: "Casamentos", year: "2026", imageUrl: photo("1511285560929-80b456fea0bc", 1400), alt: "Convidados dançando em uma festa de casamento", layout: "wide" },
+  { id: 3, number: "03", title: "O vestido", category: "Casamentos", year: "2025", imageUrl: photo("1583939003579-730e3918a45a", 1200), alt: "Noiva em retrato vertical", layout: "tall" },
+  { id: 4, number: "04", title: "Alma urbana", category: "Retratos", year: "2026", imageUrl: photo("1531746020798-e6953c6e8e04", 1200), alt: "Retrato de uma mulher com luz natural", layout: "standard" },
+  { id: 5, number: "05", title: "Olhar direto", category: "Retratos", year: "2026", imageUrl: photo("1534528741775-53994a69daeb", 1200), alt: "Retrato editorial de uma mulher", layout: "tall" },
+  { id: 6, number: "06", title: "Luz suave", category: "Retratos", year: "2025", imageUrl: photo("1524504388940-b1c1722653e1", 1200), alt: "Retrato de moda com fundo claro", layout: "standard" },
+  { id: 7, number: "07", title: "Linhas e formas", category: "Editorial", year: "2025", imageUrl: photo("1509631179647-0177331693ae", 1400), alt: "Ensaio de moda com movimento", layout: "wide" },
+  { id: 8, number: "08", title: "Amarelo", category: "Editorial", year: "2026", imageUrl: photo("1515886657613-9f3515b0c78f", 1200), alt: "Modelo em casaco amarelo em ensaio de rua", layout: "tall" },
+  { id: 9, number: "09", title: "Passarela", category: "Editorial", year: "2025", imageUrl: photo("1469334031218-e382a71b716b", 1400), alt: "Ensaio de moda em ambiente urbano", layout: "wide" },
+  { id: 10, number: "10", title: "O encontro", category: "Eventos", year: "2026", imageUrl: photo("1511578314322-379afb476865", 1400), alt: "Plateia em um evento com iluminação de palco", layout: "wide" },
+  { id: 11, number: "11", title: "Noite acesa", category: "Eventos", year: "2025", imageUrl: photo("1464366400600-7168b8af9bc3", 1400), alt: "Celebração noturna com luzes", layout: "standard" },
+  { id: 12, number: "12", title: "Vitrine", category: "Marcas", year: "2026", imageUrl: photo("1441986300917-64674bd600d8", 1400), alt: "Interior de uma loja preparado para campanha", layout: "wide" },
+  { id: 13, number: "13", title: "Objeto", category: "Marcas", year: "2026", imageUrl: photo("1523275335684-37898b6baf30", 1200), alt: "Relógio fotografado como produto", layout: "standard" },
 ]
 
 const services = [
-  { number: "01", title: "CASAMENTOS", desc: "Um olhar cinematográfico para os seus momentos mais íntimos.", url: "https://images.unsplash.com/photo-1519741497674-611481863552?w=500&h=340&fit=crop&auto=format" },
-  { number: "02", title: "RETRATOS", desc: "Retratos que revelam sua essência e personalidade.", url: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=500&h=340&fit=crop&auto=format" },
-  { number: "03", title: "EVENTOS", desc: "Registros de encontros corporativos, culturais e sociais.", url: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&h=340&fit=crop&auto=format" },
-  { number: "04", title: "EDITORIAL", desc: "Fotografia de moda para publicações impressas e digitais.", url: "https://images.unsplash.com/photo-1509631179647-0177331693ae?w=500&h=340&fit=crop&auto=format" },
-  { number: "05", title: "PUBLICIDADE", desc: "Fotografia de marcas e produtos que desperta interesse.", url: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=500&h=340&fit=crop&auto=format" },
-  { number: "06", title: "MARCAS", desc: "Ensaios de identidade visual para empreendedores e equipes.", url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&h=340&fit=crop&auto=format" },
+  { number: "01", title: "Casamentos", desc: "Do preparo ao último brinde, com direção calma e olhar de cinema.", url: photo("1511285560929-80b456fea0bc", 900) },
+  { number: "02", title: "Retratos", desc: "Ensaios que mostram presença, e não apenas uma pose.", url: photo("1531746020798-e6953c6e8e04", 900) },
+  { number: "03", title: "Eventos", desc: "Cobertura de encontros, festas e ocasiões que precisam de memória.", url: photo("1464366400600-7168b8af9bc3", 900) },
+  { number: "04", title: "Editorial", desc: "Moda e narrativa visual para publicações e campanhas.", url: photo("1509631179647-0177331693ae", 900) },
+  { number: "05", title: "Marcas", desc: "Imagens de identidade para quem precisa ser reconhecido.", url: photo("1441986300917-64674bd600d8", 900) },
+  { number: "06", title: "Produtos", desc: "Still e campanha para o objeto parecer tão bom quanto é.", url: photo("1523275335684-37898b6baf30", 900) },
 ]
 
-const galleryImages = [
-  { url: "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=1000&h=680&fit=crop&auto=format", alt: "Montanhas refletidas no lago ao amanhecer" },
-  { url: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1000&h=680&fit=crop&auto=format", alt: "Pico de montanha entre nuvens" },
-  { url: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1000&h=680&fit=crop&auto=format", alt: "Paisagem alpina entre montanhas" },
-  { url: "https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=1000&h=680&fit=crop&auto=format", alt: "Raios de sol entre as árvores" },
-  { url: "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=1000&h=680&fit=crop&auto=format", alt: "Vista de Paris ao entardecer" },
+const quotes = [
+  { text: "A gente esqueceu das câmeras. As fotos trouxeram de volta exatamente o que sentimos naquele dia.", name: "Marina", context: "Casamento" },
+  { text: "O ensaio deu rosto à marca. Essas imagens passaram a abrir todas as apresentações.", name: "Caio", context: "Marca pessoal" },
+  { text: "Foi leve. As fotos não parecem posadas — parecem a nossa casa de verdade.", name: "Helena", context: "Retrato de família" },
 ]
 
 // ─── CUSTOM CURSOR ────────────────────────────────────────────────────────────
@@ -72,9 +64,20 @@ function BrandLogo({ className = "" }: { className?: string }) {
 function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [active, setActive] = useState("home")
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60)
+    const onScroll = () => {
+      setScrolled(window.scrollY > 40)
+      const marker = window.scrollY + 160
+      let current = "home"
+      for (const id of ["work", "about", "services", "contact"]) {
+        const section = document.getElementById(id)
+        if (section && section.offsetTop <= marker) current = id
+      }
+      setActive(current)
+    }
+    onScroll()
     window.addEventListener("scroll", onScroll, { passive: true })
     return () => window.removeEventListener("scroll", onScroll)
   }, [])
@@ -97,7 +100,7 @@ function Navbar() {
     <>
       <motion.nav
         className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 md:px-12 transition-all duration-500 ${
-          scrolled ? "py-3 bg-[#212121]/95 backdrop-blur-xl border-b border-white/10" : "py-4 bg-[#212121]/80 backdrop-blur-xl border-b border-white/10"
+          scrolled || menuOpen ? "py-3 bg-[#181818]/92 backdrop-blur-xl border-b border-white/10" : "py-5 bg-transparent border-b border-transparent"
         }`}
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -114,7 +117,7 @@ function Navbar() {
             <a
               key={l.id}
               href={`#${l.id}`}
-              className="text-xs tracking-[0.25em] text-white/50 hover:text-white transition-colors duration-300"
+              className={`nav-link text-xs tracking-[0.25em] transition-colors duration-300 ${active === l.id ? "is-active" : "text-white/60 hover:text-white"}`}
               style={{ fontFamily: "var(--font-display)" }}
               data-cursor-link
             >
@@ -197,21 +200,45 @@ function Navbar() {
 // ─── HERO ─────────────────────────────────────────────────────────────────────
 
 function Hero() {
+  const ref = useRef<HTMLElement>(null)
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] })
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "-8%"])
+  const reel = portfolioItems.slice(0, 4)
+
   return (
-    <section id="home" className="hero">
-      <img className="hero-image" src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=1800&h=1200&fit=crop&auto=format" alt="Montanha refletida em um lago tranquilo ao amanhecer" fetchPriority="high" />
+    <section id="home" className="hero" ref={ref}>
+      <motion.img className="hero-image" style={{ y, scale: 1.08 }} src={photo("1511285560929-80b456fea0bc", 2000)} alt="Celebração de casamento com convidados dançando" fetchPriority="high" />
       <div className="hero-shade" />
       <div className="hero-content">
         <p className="eyebrow"><span /> LZR FOTOGRAFIA · HISTÓRIAS EM IMAGENS</p>
         <h1>Certos momentos.<br /><em>Ficam para sempre.</em></h1>
-        <p className="hero-description">Momentos reais. Imagens com propósito. Fotografia que transforma sentimentos em lembranças para guardar.</p>
+        <p className="hero-description">Casamentos, retratos e campanhas com direção de cena. Um portfólio para quem quer imagens com presença — e uma lembrança que ainda se sente.</p>
         <div className="hero-actions">
-          <a className="primary-button" href="#work">EXPLORE O PORTFÓLIO <span aria-hidden="true">↗</span></a>
-          <a className="secondary-link" href="#contact">VAMOS CRIAR JUNTOS <span aria-hidden="true">→</span></a>
+          <a className="primary-button" href="#work">VER O TRABALHO <span aria-hidden="true">↗</span></a>
+          <a className="secondary-link" href="#contact">PEDIR UM ENSAIO <span aria-hidden="true">→</span></a>
         </div>
       </div>
-      <div className="hero-bottom"><span>RETRATOS · CASAMENTOS · EDITORIAL</span><a href="#work">ROLE PARA DESCOBRIR ↓</a></div>
+      <div className="hero-bottom">
+        <span>RETRATOS · CASAMENTOS · EDITORIAL</span>
+        <div className="hero-reel">
+          {reel.map((item) => (
+            <a key={item.id} href="#work" aria-label={`Ver ${item.title} no portfólio`}>
+              <img src={item.imageUrl} alt="" />
+            </a>
+          ))}
+        </div>
+        <a className="hero-scroll" href="#work">ROLE PARA DESCOBRIR ↓</a>
+      </div>
     </section>
+  )
+}
+
+function IntroBand() {
+  return (
+    <div className="intro-band">
+      <p>O trabalho entra primeiro. Abaixo, uma seleção de ensaios — casamentos, retratos, editorial, eventos e marcas — no jeito em que a LZR gosta de contar uma história.</p>
+      <a href="#contact">QUERO UM ENSAIO ASSIM</a>
+    </div>
   )
 }
 
@@ -298,8 +325,11 @@ function LightboxModal({ items, activeId, onClose, onNav }: {
           alt={item.title}
           className="w-full max-h-[75vh] object-contain"
         />
-        <div className="mt-4 flex justify-between items-end">
+            <div className="mt-4 flex justify-between items-end">
           <div>
+            <p className="text-xs tracking-[0.3em] text-white/50 mb-1" style={{ fontFamily: "var(--font-display)" }}>
+              {String(idx + 1).padStart(2, "0")} / {String(items.length).padStart(2, "0")}
+            </p>
             <p className="text-xs tracking-[0.3em] text-[#FF6C00]" style={{ fontFamily: "var(--font-display)" }}>
               {item.category} · {item.year}
             </p>
@@ -334,96 +364,62 @@ function LightboxModal({ items, activeId, onClose, onNav }: {
 
 function Portfolio() {
   const [lightbox, setLightbox] = useState<number | null>(null)
+  const [filter, setFilter] = useState<(typeof categories)[number]>("Todos")
+  const visible = useMemo(
+    () => (filter === "Todos" ? portfolioItems : portfolioItems.filter((item) => item.category === filter)),
+    [filter]
+  )
 
   return (
-    <section id="work" className="py-28 md:py-40 px-8 md:px-16 bg-[#181818]">
+    <section id="work" className="py-20 md:py-28 px-8 md:px-16 bg-[#181818]">
       <Reveal>
-        <div className="flex items-end justify-between mb-16 md:mb-24">
+        <div className="flex items-end justify-between mb-8 md:mb-10">
           <div>
-            <p
-              className="text-xs tracking-[0.35em] text-[#FF6C00] mb-4"
-              style={{ fontFamily: "var(--font-display)" }}
-            >
+            <p className="text-xs tracking-[0.35em] text-[#FF6C00] mb-4" style={{ fontFamily: "var(--font-display)" }}>
               PORTFÓLIO
             </p>
-            <h2
-              className="text-5xl md:text-7xl font-black uppercase leading-none text-white"
-              style={{ fontFamily: "var(--font-display)" }}
-            >
+            <h2 className="text-5xl md:text-7xl font-black uppercase leading-none text-white" style={{ fontFamily: "var(--font-display)" }}>
               Trabalhos
               <br />
               selecionados
             </h2>
           </div>
-          <p
-            className="hidden md:block text-sm text-white/60 max-w-xs text-right leading-relaxed"
-            style={{ fontFamily: "var(--font-body)" }}
-          >
-            Uma seleção especial
+          <p className="hidden md:block text-sm text-white/70 max-w-xs text-right leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>
+            Uma seleção para mostrar o olhar.
             <br />
-            de histórias em imagens.
+            Clique para ver em tela cheia.
           </p>
         </div>
       </Reveal>
 
-      {/* Asymmetric grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 auto-rows-[280px]">
-        {portfolioItems.map((item, i) => (
-          <Reveal key={item.id} delay={i * 0.08} className={item.span}>
-            <div
-              className="portfolio-card relative group overflow-hidden bg-[#262626] h-full"
-              role="button" tabIndex={0} aria-label={`Ver ${item.title}`}
-              onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setLightbox(item.id) } }}
-              data-cursor-image
-              onClick={() => setLightbox(item.id)}
-            >
-              <img
-                src={item.imageUrl}
-                alt={`${item.title} — ${item.category}`}
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      <div className="filters" role="toolbar" aria-label="Filtrar portfólio">
+        {categories.map((category) => (
+          <button key={category} type="button" aria-pressed={filter === category} onClick={() => { setFilter(category); setLightbox(null) }}>
+            {category.toUpperCase()}
+          </button>
+        ))}
+      </div>
+      <p className="sr-only" aria-live="polite">{visible.length} trabalhos em {filter}</p>
 
-              {/* Info overlay */}
-              <div className="absolute inset-0 p-6 flex flex-col justify-between opacity-0 group-hover:opacity-100 transition-all duration-400">
-                <p
-                  className="text-xs text-white/50 tracking-[0.3em]"
-                  style={{ fontFamily: "var(--font-display)" }}
-                >
-                  {item.number}
-                </p>
-                <div>
-                  <p
-                    className="text-xs tracking-[0.25em] text-[#FF6C00] mb-1"
-                    style={{ fontFamily: "var(--font-display)" }}
-                  >
-                    {item.category} · {item.year}
-                  </p>
-                  <p
-                    className="text-2xl font-black text-white uppercase leading-none"
-                    style={{ fontFamily: "var(--font-display)" }}
-                  >
-                    {item.title}
-                  </p>
-                  <div className="mt-3 flex items-center gap-3">
-                    <span className="block w-8 h-px bg-[#FF6C00]" />
-                    <span
-                      className="text-[10px] tracking-[0.3em] text-white/60"
-                      style={{ fontFamily: "var(--font-display)" }}
-                    >
-                      VER PROJETO
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </Reveal>
+      <div className="work-grid">
+        {visible.map((item) => (
+          <button key={item.id} type="button" className={`work-card ${item.layout}`} aria-label={`Ver ${item.title}`} onClick={() => setLightbox(item.id)}>
+            <span className="frame">
+              <img src={item.imageUrl} alt={item.alt} loading="lazy" />
+              <span className="work-caption">
+                <span>
+                  <span className="work-kicker">{item.category} · {item.year}</span>
+                  <span className="work-title">{item.title}</span>
+                </span>
+                <span className="work-view">VER</span>
+              </span>
+            </span>
+          </button>
         ))}
       </div>
 
-      {/* Lightbox */}
       <AnimatePresence>
-        {lightbox !== null && <LightboxModal items={portfolioItems} activeId={lightbox} onClose={() => setLightbox(null)} onNav={setLightbox} />}
+        {lightbox !== null && <LightboxModal items={visible} activeId={lightbox} onClose={() => setLightbox(null)} onNav={setLightbox} />}
       </AnimatePresence>
     </section>
   )
@@ -442,8 +438,8 @@ function About() {
             data-cursor-image
           >
             <img
-              src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=1100&fit=crop&auto=format"
-              alt="Retrato ao ar livre"
+              src={photo("1452587925148-ce544e77e70d", 1200)}
+              alt="Fotógrafo em ensaio ao ar livre, visto de lado"
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#181818]/40 to-transparent" />
@@ -482,42 +478,33 @@ function About() {
           </Reveal>
           <Reveal delay={0.15}>
             <p
-              className="text-white/50 leading-relaxed mb-4 text-sm"
+              className="text-white/75 leading-relaxed mb-4 text-sm"
               style={{ fontFamily: "var(--font-body)" }}
             >
-              Na LZR Fotografia, o extraordinário está no cotidiano. Um espaço para
-              imagens cinematográficas que capturam emoções e momentos autênticos.
+              Na LZR Fotografia, o ensaio começa com uma conversa e termina numa galeria pronta para guardar, imprimir e publicar. O cotidiano entra no quadro quando a luz, a direção e o tempo estão certos.
             </p>
             <p
-              className="text-white/60 leading-relaxed text-sm"
+              className="text-white/75 leading-relaxed text-sm"
               style={{ fontFamily: "var(--font-body)" }}
             >
-              De um olhar sereno a uma celebração única, cada ensaio começa com uma conexão. O resultado: fotografias com presença, personalidade e sentimento.
+              Casamentos, retratos, editorial e marcas. Cada trabalho tem um recorte próprio — e a mesma promessa: imagem com presença, não apenas um registro.
             </p>
           </Reveal>
 
-          {/* Stats */}
           <Reveal delay={0.2}>
-            <div className="mt-12 grid grid-cols-3 gap-8 border-t border-white/[0.06] pt-10">
+            <div className="promise-list">
               {[
-                { val: "01", label: "ATENDIMENTO PESSOAL" },
-                { val: "02", label: "DIREÇÃO CRIATIVA" },
-                { val: "03", label: "EDIÇÃO CUIDADOSA" },
-              ].map((s) => (
-                <div key={s.label}>
-                  <p
-                    className="text-4xl font-black text-white mb-1"
-                    style={{ fontFamily: "var(--font-display)" }}
-                  >
-                    {s.val}
-                  </p>
-                  <p
-                    className="text-[10px] tracking-[0.25em] text-white/60 leading-snug"
-                    style={{ fontFamily: "var(--font-display)" }}
-                  >
-                    {s.label}
-                  </p>
-                </div>
+                { title: "Direção de cena", desc: "Referências, luz e condução para o ensaio acontecer com calma." },
+                { title: "Edição autoral", desc: "Cor, seleção e acabamento com um olhar consistente." },
+                { title: "Galeria privada", desc: "Arquivos organizados para guardar, imprimir e divulgar." },
+              ].map((item) => (
+                <article key={item.title}>
+                  <span className="mark" aria-hidden="true" />
+                  <div>
+                    <h3>{item.title}</h3>
+                    <p>{item.desc}</p>
+                  </div>
+                </article>
               ))}
             </div>
           </Reveal>
@@ -549,40 +536,15 @@ function Services() {
         </div>
       </Reveal>
 
-      <div className="border-t border-white/[0.06]">
+      <div className="service-grid">
         {services.map((s) => (
-          <a
-            href="#contact"
-            key={s.number}
-            className="group border-b border-white/[0.06] py-7 md:py-9 flex items-center justify-between gap-6 service-row transition-colors duration-300"
-            data-cursor-link
-          >
-            <img src={s.url} alt="" loading="lazy" className="service-thumbnail" />
-            <div className="flex items-center gap-6 md:gap-10 flex-1 min-w-0">
-              <span
-                className="text-xs tracking-[0.2em] text-white/60 group-hover:text-[#FF6C00] transition-colors flex-shrink-0"
-                style={{ fontFamily: "var(--font-display)" }}
-              >
-                {s.number}
-              </span>
-              <span
-                className="text-3xl md:text-5xl font-black text-white/70 group-hover:text-white transition-colors uppercase leading-none"
-                style={{ fontFamily: "var(--font-display)" }}
-              >
-                {s.title}
-              </span>
-            </div>
-            <p
-              className="hidden md:block text-sm text-white/60 group-hover:text-white/50 transition-colors max-w-xs text-right"
-              style={{ fontFamily: "var(--font-body)" }}
-            >
-              {s.desc}
-            </p>
-            <span
-              className="text-white/60 group-hover:text-[#FF6C00] transition-all duration-300 transform group-hover:translate-x-1 flex-shrink-0"
-              style={{ fontFamily: "var(--font-display)" }}
-            >
-              →
+          <a href="#contact" key={s.number} className="service-card">
+            <img src={s.url} alt="" loading="lazy" />
+            <span className="shade" />
+            <span className="meta">
+              <span className="index">{s.number}</span>
+              <h3>{s.title}</h3>
+              <p>{s.desc}</p>
             </span>
           </a>
         ))}
@@ -664,8 +626,8 @@ function CinematicQuote() {
     <div ref={ref} className="relative h-[70vh] overflow-hidden">
       <motion.div className="absolute inset-0" style={{ scale }}>
         <img
-          src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=1800&h=1200&fit=crop&auto=format"
-          alt="Vista de Paris ao entardecer"
+          src={photo("1529634597503-139d3726fed5", 2000)}
+          alt="Casal em close durante um ensaio"
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-black/60" />
@@ -693,15 +655,59 @@ function CinematicQuote() {
 
 // ─── HORIZONTAL GALLERY ───────────────────────────────────────────────────────
 
-function HorizontalGallery() {
-  const [active, setActive] = useState(0)
-  const photo = galleryImages[active]
-  return <section className="gallery-section" aria-label="Galeria de paisagens">
-    <div className="gallery-heading"><div><p className="eyebrow">ENTRE MOMENTOS</p><h2>Uma nova perspectiva.</h2></div>
-      <div className="gallery-controls"><button aria-label="Paisagem anterior" onClick={() => setActive((active - 1 + galleryImages.length) % galleryImages.length)}>←</button><button aria-label="Próxima paisagem" onClick={() => setActive((active + 1) % galleryImages.length)}>→</button></div>
-    </div>
-    <figure><img src={photo.url} alt={photo.alt} loading="lazy" /><figcaption aria-live="polite"><span>{photo.alt}</span><span>{String(active + 1).padStart(2, "0")} / 05</span></figcaption></figure>
-  </section>
+function Quotes() {
+  return (
+    <section className="py-24 md:py-32 px-8 md:px-16 bg-[#181818]" aria-label="Depoimentos">
+      <Reveal>
+        <p className="text-xs tracking-[0.35em] text-[#FF6C00] mb-4" style={{ fontFamily: "var(--font-display)" }}>DEPOIMENTOS</p>
+        <h2 className="text-5xl md:text-6xl font-black uppercase leading-none text-white mb-14" style={{ fontFamily: "var(--font-display)" }}>
+          O que fica
+          <br />
+          depois do ensaio
+        </h2>
+      </Reveal>
+      <div className="quote-grid">
+        {quotes.map((quote) => (
+          <blockquote className="quote-card" key={quote.name}>
+            <p>“{quote.text}”</p>
+            <footer>{quote.name} · {quote.context}</footer>
+          </blockquote>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function Filmstrip() {
+  const scroller = useRef<HTMLDivElement>(null)
+  const scroll = (direction: number) => {
+    const node = scroller.current
+    if (!node) return
+    node.scrollBy({ left: direction * Math.min(node.clientWidth * 0.8, 640), behavior: "smooth" })
+  }
+
+  return (
+    <section className="gallery-section filmstrip" aria-label="Arquivo de imagens">
+      <div className="gallery-heading">
+        <div>
+          <p className="eyebrow"><span />ARQUIVO</p>
+          <h2>Passe o olhar pelo trabalho.</h2>
+        </div>
+        <div className="gallery-controls">
+          <button type="button" aria-label="Imagens anteriores" onClick={() => scroll(-1)}>←</button>
+          <button type="button" aria-label="Próximas imagens" onClick={() => scroll(1)}>→</button>
+        </div>
+      </div>
+      <div className="filmstrip-track" ref={scroller}>
+        {portfolioItems.map((item) => (
+          <figure key={item.id}>
+            <img src={item.imageUrl} alt={item.alt} loading="lazy" />
+            <figcaption><span>{item.title}</span><span>{item.category}</span></figcaption>
+          </figure>
+        ))}
+      </div>
+    </section>
+  )
 }
 
 // ─── CTA ──────────────────────────────────────────────────────────────────────
@@ -730,7 +736,7 @@ function CTA() {
           className="text-white/60 text-sm mb-14 max-w-sm mx-auto leading-relaxed"
           style={{ fontFamily: "var(--font-body)" }}
         >
-          Disponível para projetos especiais, ensaios e colaborações.
+          Ensaios, casamentos e campanhas com vaga para novos projetos.
         </p>
         <a
           href="#contact"
@@ -813,89 +819,44 @@ function Contact() {
                 className="text-3xl font-black text-white uppercase mb-4"
                 style={{ fontFamily: "var(--font-display)" }}
               >
-                Envio indisponível.
+                Pedido anotado.
               </p>
-              <p className="text-sm text-white/65" style={{ fontFamily: "var(--font-body)" }}>
-                Nosso canal de contato está sendo atualizado. Sua mensagem não foi enviada.
+              <p className="text-sm text-white/75" style={{ fontFamily: "var(--font-body)" }}>
+                Obrigado{form.name ? `, ${form.name.split(" ")[0]}` : ""}. Seu interesse{form.type ? ` em ${form.type.toLowerCase()}` : ""} ficou registrado nesta página. Assim que o envio automático entrar no ar, este pedido segue direto para a LZR.
               </p>
             </div>
           ) : (
-            <form onSubmit={submit} className="space-y-8">
-              <p className="text-sm text-white/60">O envio de pedidos está temporariamente indisponível enquanto atualizamos nosso canal de contato.</p>
+            <form onSubmit={submit} className="space-y-7">
               <div>
-                <label htmlFor="name" className="sr-only">Nome</label>
-                <input
-                  id="name"
-                  type="text"
-                  placeholder="Nome"
-                  required
-                  className={inputClass}
-                  style={{ fontFamily: "var(--font-body)" }}
-                  value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
-                />
+                <label htmlFor="name" className="field-label">NOME</label>
+                <input id="name" type="text" autoComplete="name" required className={inputClass} style={{ fontFamily: "var(--font-body)" }} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
               </div>
               <div>
-                <label htmlFor="email" className="sr-only">E-mail</label>
-                <input
-                  id="email"
-                  type="email"
-                  placeholder="E-mail"
-                  required
-                  className={inputClass}
-                  style={{ fontFamily: "var(--font-body)" }}
-                  value={form.email}
-                  onChange={(e) => setForm({ ...form, email: e.target.value })}
-                />
+                <label htmlFor="email" className="field-label">E-MAIL</label>
+                <input id="email" type="email" autoComplete="email" required className={inputClass} style={{ fontFamily: "var(--font-body)" }} value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
               </div>
               <div>
-                <label htmlFor="phone" className="sr-only">Telefone</label>
-                <input
-                  id="phone"
-                  type="tel"
-                  placeholder="Telefone (opcional)"
-                  className={inputClass}
-                  style={{ fontFamily: "var(--font-body)" }}
-                  value={form.phone}
-                  onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                />
+                <label htmlFor="phone" className="field-label">TELEFONE</label>
+                <input id="phone" type="tel" autoComplete="tel" className={inputClass} style={{ fontFamily: "var(--font-body)" }} value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
               </div>
               <div>
-                <label htmlFor="type" className="sr-only">Tipo de projeto</label>
-                <select
-                  id="type"
-                  required
-                  className={`${inputClass} appearance-none`}
-                  style={{ fontFamily: "var(--font-body)", background: "transparent" }}
-                  value={form.type}
-                  onChange={(e) => setForm({ ...form, type: e.target.value })}
-                >
-                  <option value="" disabled style={{ background: "#262626" }}>Tipo de projeto</option>
-                  {["Casamento", "Retrato", "Evento", "Editorial", "Publicidade", "Marca pessoal", "Outro"].map((t) => (
+                <label htmlFor="type" className="field-label">TIPO DE PROJETO</label>
+                <select id="type" required className={`${inputClass} appearance-none`} style={{ fontFamily: "var(--font-body)", background: "transparent" }} value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value })}>
+                  <option value="" disabled style={{ background: "#262626" }}>Selecione</option>
+                  {["Casamento", "Retrato", "Evento", "Editorial", "Marca", "Produto", "Outro"].map((t) => (
                     <option key={t} value={t} style={{ background: "#262626" }}>{t}</option>
                   ))}
                 </select>
               </div>
               <div>
-                <label htmlFor="message" className="sr-only">Mensagem</label>
-                <textarea
-                  id="message"
-                  placeholder="Conte um pouco sobre o seu projeto..."
-                  rows={4}
-                  className={`${inputClass} resize-none`}
-                  style={{ fontFamily: "var(--font-body)" }}
-                  value={form.message}
-                  onChange={(e) => setForm({ ...form, message: e.target.value })}
-                />
+                <label htmlFor="message" className="field-label">MENSAGEM</label>
+                <textarea id="message" placeholder="Data, cidade e o que você quer registrar" rows={4} className={`${inputClass} resize-none`} style={{ fontFamily: "var(--font-body)" }} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} />
               </div>
-              <button
-                type="submit" disabled
-                className="w-full border border-white/20 hover:border-[#FF6C00] text-white hover:text-[#FF6C00] py-4 text-xs tracking-[0.3em] transition-all duration-300 flex items-center justify-center gap-4 group"
-                style={{ fontFamily: "var(--font-display)" }}
-              >
-                CONTATO EM BREVE
+              <button type="submit" className="w-full border border-white/20 hover:border-[#FF6C00] hover:bg-[#FF6C00] text-white hover:text-[#181818] py-4 text-xs tracking-[0.3em] transition-all duration-300 flex items-center justify-center gap-4 group" style={{ fontFamily: "var(--font-display)" }}>
+                ENVIAR PEDIDO
                 <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
               </button>
+              <p className="contact-note">O envio automático ainda está em preparação. O pedido fica registrado nesta página até o canal entrar no ar.</p>
             </form>
           )}
         </Reveal>
@@ -981,12 +942,14 @@ export default function App() {
       <Navbar />
       <main>
         <Hero />
+        <IntroBand />
         <Portfolio />
         <About />
         <Services />
         <Process />
+        <Quotes />
         <CinematicQuote />
-        <HorizontalGallery />
+        <Filmstrip />
         <CTA />
         <Contact />
       </main>
