@@ -1,62 +1,15 @@
 import { useState, useEffect, useMemo, useRef, type ReactNode } from "react"
 import { motion, useScroll, useTransform, AnimatePresence, MotionConfig } from "motion/react"
-import logoSrc from "@/imports/LogoLuze-Photoroom (1).png"
-
-// ─── TYPES ────────────────────────────────────────────────────────────────────
-
-type WorkCategory = "Casamentos" | "Retratos" | "Editorial" | "Eventos" | "Marcas"
-
-interface PortfolioItem {
-  id: number
-  number: string
-  title: string
-  category: WorkCategory
-  year: string
-  imageUrl: string
-  alt: string
-  layout: "feature" | "tall" | "wide" | "standard"
-}
-
-const photo = (id: string, width = 1400) =>
-  `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${width}&q=80`
+import { SiteContentProvider, useSiteContent } from "@/context/SiteContentContext"
+import type { PortfolioItem } from "@/lib/site-content"
 
 const categories = ["Todos", "Casamentos", "Retratos", "Editorial", "Eventos", "Marcas"] as const
-
-const portfolioItems: PortfolioItem[] = [
-  { id: 1, number: "01", title: "Hora dourada", category: "Casamentos", year: "2026", imageUrl: photo("1519741497674-611481863552", 1400), alt: "Casal de noivos em um momento íntimo", layout: "feature" },
-  { id: 2, number: "02", title: "A celebração", category: "Casamentos", year: "2026", imageUrl: photo("1511285560929-80b456fea0bc", 1400), alt: "Convidados dançando em uma festa de casamento", layout: "wide" },
-  { id: 3, number: "03", title: "O vestido", category: "Casamentos", year: "2025", imageUrl: photo("1583939003579-730e3918a45a", 1200), alt: "Noiva em retrato vertical", layout: "tall" },
-  { id: 4, number: "04", title: "Alma urbana", category: "Retratos", year: "2026", imageUrl: photo("1531746020798-e6953c6e8e04", 1200), alt: "Retrato de uma mulher com luz natural", layout: "standard" },
-  { id: 5, number: "05", title: "Olhar direto", category: "Retratos", year: "2026", imageUrl: photo("1534528741775-53994a69daeb", 1200), alt: "Retrato editorial de uma mulher", layout: "tall" },
-  { id: 6, number: "06", title: "Luz suave", category: "Retratos", year: "2025", imageUrl: photo("1524504388940-b1c1722653e1", 1200), alt: "Retrato de moda com fundo claro", layout: "standard" },
-  { id: 7, number: "07", title: "Linhas e formas", category: "Editorial", year: "2025", imageUrl: photo("1509631179647-0177331693ae", 1400), alt: "Ensaio de moda com movimento", layout: "wide" },
-  { id: 8, number: "08", title: "Amarelo", category: "Editorial", year: "2026", imageUrl: photo("1515886657613-9f3515b0c78f", 1200), alt: "Modelo em casaco amarelo em ensaio de rua", layout: "tall" },
-  { id: 9, number: "09", title: "Passarela", category: "Editorial", year: "2025", imageUrl: photo("1469334031218-e382a71b716b", 1400), alt: "Ensaio de moda em ambiente urbano", layout: "wide" },
-  { id: 10, number: "10", title: "O encontro", category: "Eventos", year: "2026", imageUrl: photo("1511578314322-379afb476865", 1400), alt: "Plateia em um evento com iluminação de palco", layout: "wide" },
-  { id: 11, number: "11", title: "Noite acesa", category: "Eventos", year: "2025", imageUrl: photo("1464366400600-7168b8af9bc3", 1400), alt: "Celebração noturna com luzes", layout: "standard" },
-  { id: 12, number: "12", title: "Vitrine", category: "Marcas", year: "2026", imageUrl: photo("1441986300917-64674bd600d8", 1400), alt: "Interior de uma loja preparado para campanha", layout: "wide" },
-  { id: 13, number: "13", title: "Objeto", category: "Marcas", year: "2026", imageUrl: photo("1523275335684-37898b6baf30", 1200), alt: "Relógio fotografado como produto", layout: "standard" },
-]
-
-const services = [
-  { number: "01", title: "Casamentos", desc: "Do preparo ao último brinde, com direção calma e olhar de cinema.", url: photo("1511285560929-80b456fea0bc", 900) },
-  { number: "02", title: "Retratos", desc: "Ensaios que mostram presença, e não apenas uma pose.", url: photo("1531746020798-e6953c6e8e04", 900) },
-  { number: "03", title: "Eventos", desc: "Cobertura de encontros, festas e ocasiões que precisam de memória.", url: photo("1464366400600-7168b8af9bc3", 900) },
-  { number: "04", title: "Editorial", desc: "Moda e narrativa visual para publicações e campanhas.", url: photo("1509631179647-0177331693ae", 900) },
-  { number: "05", title: "Marcas", desc: "Imagens de identidade para quem precisa ser reconhecido.", url: photo("1441986300917-64674bd600d8", 900) },
-  { number: "06", title: "Produtos", desc: "Still e campanha para o objeto parecer tão bom quanto é.", url: photo("1523275335684-37898b6baf30", 900) },
-]
-
-const quotes = [
-  { text: "A gente esqueceu das câmeras. As fotos trouxeram de volta exatamente o que sentimos naquele dia.", name: "Marina", context: "Casamento" },
-  { text: "O ensaio deu rosto à marca. Essas imagens passaram a abrir todas as apresentações.", name: "Caio", context: "Marca pessoal" },
-  { text: "Foi leve. As fotos não parecem posadas — parecem a nossa casa de verdade.", name: "Helena", context: "Retrato de família" },
-]
 
 // ─── CUSTOM CURSOR ────────────────────────────────────────────────────────────
 
 function BrandLogo({ className = "" }: { className?: string }) {
-  return <span className={`brand-logo ${className}`}><img src={logoSrc} alt="LZR Fotografia" /></span>
+  const { content } = useSiteContent()
+  return <span className={`brand-logo ${className}`}><img src={content.brand.logoUrl} alt="LZR Fotografia" /></span>
 }
 
 // ─── NAV ──────────────────────────────────────────────────────────────────────
@@ -200,19 +153,20 @@ function Navbar() {
 // ─── HERO ─────────────────────────────────────────────────────────────────────
 
 function Hero() {
+  const { content } = useSiteContent()
   const ref = useRef<HTMLElement>(null)
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] })
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "-8%"])
-  const reel = portfolioItems.slice(0, 4)
+  const reel = content.portfolio.slice(0, 4)
 
   return (
     <section id="home" className="hero" ref={ref}>
-      <motion.img className="hero-image" style={{ y, scale: 1.08 }} src={photo("1511285560929-80b456fea0bc", 2000)} alt="Celebração de casamento com convidados dançando" fetchPriority="high" />
+      <motion.img className="hero-image" style={{ y, scale: 1.08 }} src={content.hero.imageUrl} alt="" fetchPriority="high" />
       <div className="hero-shade" />
       <div className="hero-content">
-        <p className="eyebrow"><span /> LZR FOTOGRAFIA · HISTÓRIAS EM IMAGENS</p>
-        <h1>Certos momentos.<br /><em>Ficam para sempre.</em></h1>
-        <p className="hero-description">Casamentos, retratos e campanhas com direção de cena. Um portfólio para quem quer imagens com presença — e uma lembrança que ainda se sente.</p>
+        <p className="eyebrow"><span /> {content.hero.eyebrow}</p>
+        <h1>{content.hero.title}<br /><em>{content.hero.titleAccent}</em></h1>
+        <p className="hero-description">{content.hero.description}</p>
         <div className="hero-actions">
           <a className="primary-button" href="#work">VER O TRABALHO <span aria-hidden="true">↗</span></a>
           <a className="secondary-link" href="#contact">PEDIR UM ENSAIO <span aria-hidden="true">→</span></a>
@@ -234,9 +188,10 @@ function Hero() {
 }
 
 function IntroBand() {
+  const { content } = useSiteContent()
   return (
     <div className="intro-band">
-      <p>O trabalho entra primeiro. Abaixo, uma seleção de ensaios — casamentos, retratos, editorial, eventos e marcas — no jeito em que a LZR gosta de contar uma história.</p>
+      <p>{content.intro}</p>
       <a href="#contact">QUERO UM ENSAIO ASSIM</a>
     </div>
   )
@@ -363,11 +318,12 @@ function LightboxModal({ items, activeId, onClose, onNav }: {
 // ─── PORTFÓLIO ────────────────────────────────────────────────────────────────
 
 function Portfolio() {
+  const { content } = useSiteContent()
   const [lightbox, setLightbox] = useState<number | null>(null)
   const [filter, setFilter] = useState<(typeof categories)[number]>("Todos")
   const visible = useMemo(
-    () => (filter === "Todos" ? portfolioItems : portfolioItems.filter((item) => item.category === filter)),
-    [filter]
+    () => (filter === "Todos" ? content.portfolio : content.portfolio.filter((item) => item.category === filter)),
+    [filter, content.portfolio]
   )
 
   return (
@@ -428,6 +384,7 @@ function Portfolio() {
 // ─── ABOUT ────────────────────────────────────────────────────────────────────
 
 function About() {
+  const { content } = useSiteContent()
   return (
     <section id="about" className="py-28 md:py-40 px-8 md:px-16 bg-[#212121]">
       <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 md:gap-24 items-center">
@@ -438,7 +395,7 @@ function About() {
             data-cursor-image
           >
             <img
-              src={photo("1452587925148-ce544e77e70d", 1200)}
+              src={content.about.imageUrl}
               alt="Fotógrafo em ensaio ao ar livre, visto de lado"
               className="w-full h-full object-cover"
             />
@@ -471,9 +428,7 @@ function About() {
               className="text-5xl md:text-6xl font-black uppercase leading-[0.9] text-white mb-8"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              Um olhar
-              <br />
-              sensível.
+              {content.about.title}
             </h2>
           </Reveal>
           <Reveal delay={0.15}>
@@ -481,13 +436,13 @@ function About() {
               className="text-white/75 leading-relaxed mb-4 text-sm"
               style={{ fontFamily: "var(--font-body)" }}
             >
-              Na LZR Fotografia, o ensaio começa com uma conversa e termina numa galeria pronta para guardar, imprimir e publicar. O cotidiano entra no quadro quando a luz, a direção e o tempo estão certos.
+              {content.about.paragraph1}
             </p>
             <p
               className="text-white/75 leading-relaxed text-sm"
               style={{ fontFamily: "var(--font-body)" }}
             >
-              Casamentos, retratos, editorial e marcas. Cada trabalho tem um recorte próprio — e a mesma promessa: imagem com presença, não apenas um registro.
+              {content.about.paragraph2}
             </p>
           </Reveal>
 
@@ -517,6 +472,7 @@ function About() {
 // ─── SERVICES ─────────────────────────────────────────────────────────────────
 
 function Services() {
+  const { content } = useSiteContent()
   return (
     <section id="services" className="py-28 md:py-40 px-8 md:px-16 bg-[#181818]">
       <Reveal>
@@ -537,7 +493,7 @@ function Services() {
       </Reveal>
 
       <div className="service-grid">
-        {services.map((s) => (
+        {content.services.map((s) => (
           <a href="#contact" key={s.number} className="service-card">
             <img src={s.url} alt="" loading="lazy" />
             <span className="shade" />
@@ -617,6 +573,7 @@ function Process() {
 // ─── CINEMATIC QUOTE ──────────────────────────────────────────────────────────
 
 function CinematicQuote() {
+  const { content } = useSiteContent()
   const ref = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] })
   const scale = useTransform(scrollYProgress, [0, 1], [1.1, 1.25])
@@ -626,7 +583,7 @@ function CinematicQuote() {
     <div ref={ref} className="relative h-[70vh] overflow-hidden">
       <motion.div className="absolute inset-0" style={{ scale }}>
         <img
-          src={photo("1529634597503-139d3726fed5", 2000)}
+          src={content.cinematic.imageUrl}
           alt="Casal em close durante um ensaio"
           className="w-full h-full object-cover"
         />
@@ -642,9 +599,7 @@ function CinematicQuote() {
             className="text-4xl md:text-6xl lg:text-7xl font-black text-white uppercase leading-tight tracking-tight"
             style={{ fontFamily: "var(--font-display)" }}
           >
-            "Cada imagem
-            <br />
-            conta uma história."
+            “{content.cinematic.text}”
           </p>
           <div className="mt-6 w-10 h-px bg-[#FF6C00] mx-auto" />
         </Reveal>
@@ -656,6 +611,7 @@ function CinematicQuote() {
 // ─── HORIZONTAL GALLERY ───────────────────────────────────────────────────────
 
 function Quotes() {
+  const { content } = useSiteContent()
   return (
     <section className="py-24 md:py-32 px-8 md:px-16 bg-[#181818]" aria-label="Depoimentos">
       <Reveal>
@@ -667,7 +623,7 @@ function Quotes() {
         </h2>
       </Reveal>
       <div className="quote-grid">
-        {quotes.map((quote) => (
+        {content.quotes.map((quote) => (
           <blockquote className="quote-card" key={quote.name}>
             <p>“{quote.text}”</p>
             <footer>{quote.name} · {quote.context}</footer>
@@ -679,6 +635,7 @@ function Quotes() {
 }
 
 function Filmstrip() {
+  const { content } = useSiteContent()
   const scroller = useRef<HTMLDivElement>(null)
   const scroll = (direction: number) => {
     const node = scroller.current
@@ -699,7 +656,7 @@ function Filmstrip() {
         </div>
       </div>
       <div className="filmstrip-track" ref={scroller}>
-        {portfolioItems.map((item) => (
+        {content.portfolio.map((item) => (
           <figure key={item.id}>
             <img src={item.imageUrl} alt={item.alt} loading="lazy" />
             <figcaption><span>{item.title}</span><span>{item.category}</span></figcaption>
@@ -755,6 +712,7 @@ function CTA() {
 // ─── CONTACT ──────────────────────────────────────────────────────────────────
 
 function Contact() {
+  const { content } = useSiteContent()
   const [form, setForm] = useState({ name: "", email: "", phone: "", type: "", message: "" })
   const [sent, setSent] = useState(false)
 
@@ -787,9 +745,9 @@ function Contact() {
             </h2>
             <div className="space-y-5">
               {[
-                { label: "E-MAIL", val: "Em breve" },
-                { label: "TELEFONE", val: "Em breve" },
-                { label: "ATENDIMENTO", val: "Com agendamento" },
+                { label: "E-MAIL", val: content.contact.email },
+                { label: "TELEFONE", val: content.contact.phone },
+                { label: "ATENDIMENTO", val: content.contact.location },
               ].map((info) => (
                 <div key={info.label}>
                   <p
@@ -868,6 +826,7 @@ function Contact() {
 // ─── FOOTER ───────────────────────────────────────────────────────────────────
 
 function Footer() {
+  const { content } = useSiteContent()
   return (
     <footer className="py-16 md:py-20 px-8 md:px-16 bg-[#181818] border-t border-white/[0.06]">
       <div className="max-w-7xl mx-auto">
@@ -883,9 +842,9 @@ function Footer() {
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 text-right">
             {[
-              { label: "E-MAIL", val: "Em breve" },
-              { label: "TELEFONE", val: "Em breve" },
-              { label: "ATENDIMENTO", val: "Com agendamento" },
+              { label: "E-MAIL", val: content.contact.email },
+              { label: "TELEFONE", val: content.contact.phone },
+              { label: "ATENDIMENTO", val: content.contact.location },
             ].map((info) => (
               <div key={info.label}>
                 <p
@@ -934,26 +893,28 @@ function Footer() {
 export default function App() {
 
   return (
-    <MotionConfig reducedMotion="user"><div
-      className="bg-[#181818] text-[#ede9e3] min-h-screen"
-      style={{ fontFamily: "var(--font-body)" }}
-    >
-      <a className="skip-link" href="#work">Pular para o conteúdo</a>
-      <Navbar />
-      <main>
-        <Hero />
-        <IntroBand />
-        <Portfolio />
-        <About />
-        <Services />
-        <Process />
-        <Quotes />
-        <CinematicQuote />
-        <Filmstrip />
-        <CTA />
-        <Contact />
-      </main>
-      <Footer />
-    </div></MotionConfig>
+    <SiteContentProvider>
+      <MotionConfig reducedMotion="user"><div
+        className="bg-[#181818] text-[#ede9e3] min-h-screen"
+        style={{ fontFamily: "var(--font-body)" }}
+      >
+        <a className="skip-link" href="#work">Pular para o conteúdo</a>
+        <Navbar />
+        <main>
+          <Hero />
+          <IntroBand />
+          <Portfolio />
+          <About />
+          <Services />
+          <Process />
+          <Quotes />
+          <CinematicQuote />
+          <Filmstrip />
+          <CTA />
+          <Contact />
+        </main>
+        <Footer />
+      </div></MotionConfig>
+    </SiteContentProvider>
   )
 }
