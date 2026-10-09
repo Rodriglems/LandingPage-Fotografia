@@ -1,10 +1,22 @@
 import { useEffect, useState, type ChangeEvent, type FormEvent } from "react"
 import logoSrc from "@/imports/LogoLuze-Photoroom (1).png"
 import { defaultSiteContent, type PortfolioItem, type SiteContent, type WorkCategory, type WorkLayout } from "@/lib/site-content"
-import { fetchSiteContent, getSession, isSupabaseConfigured, saveSiteContent, signIn, signOut, uploadImage } from "@/lib/supabase-rest"
+import {
+  deleteContactRequest,
+  fetchContactRequests,
+  fetchSiteContent,
+  getSession,
+  isSupabaseConfigured,
+  saveSiteContent,
+  signIn,
+  signOut,
+  updateContactRequest,
+  uploadImage,
+  type ContactRequest,
+} from "@/lib/supabase-rest"
 import "@/styles/admin.css"
 
-type Tab = "pagina" | "portfolio" | "servicos" | "depoimentos"
+type Tab = "pagina" | "portfolio" | "servicos" | "depoimentos" | "pedidos"
 
 const categories: WorkCategory[] = ["Casamentos", "Retratos", "Editorial", "Eventos", "Marcas"]
 const layouts: { value: WorkLayout; label: string }[] = [
@@ -135,6 +147,7 @@ export default function Admin() {
   const [authenticated, setAuthenticated] = useState(false)
   const [checking, setChecking] = useState(true)
   const [content, setContent] = useState<SiteContent>(defaultSiteContent)
+  const [requests, setRequests] = useState<ContactRequest[]>([])
   const [tab, setTab] = useState<Tab>("pagina")
   const [saving, setSaving] = useState(false)
   const [notice, setNotice] = useState("")
@@ -145,6 +158,11 @@ export default function Admin() {
     if (session) {
       const remote = await fetchSiteContent()
       if (remote) setContent({ ...defaultSiteContent, ...remote })
+      try {
+        setRequests(await fetchContactRequests())
+      } catch {
+        setRequests([])
+      }
     }
     setChecking(false)
   }
@@ -191,6 +209,27 @@ export default function Admin() {
     }))
   }
 
+  const changeRequestStatus = async (id: string, status: ContactRequest["status"]) => {
+    setNotice("")
+    try {
+      await updateContactRequest(id, status)
+      setRequests((current) => current.map((request) => request.id === id ? { ...request, status } : request))
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Não foi possível atualizar o pedido.")
+    }
+  }
+
+  const removeRequest = async (id: string) => {
+    if (!window.confirm("Excluir este pedido permanentemente?")) return
+    setNotice("")
+    try {
+      await deleteContactRequest(id)
+      setRequests((current) => current.filter((request) => request.id !== id))
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Não foi possível excluir o pedido.")
+    }
+  }
+
   if (!isSupabaseConfigured) return <SetupNotice />
   if (checking) return <div className="admin-loading">Carregando painel...</div>
   if (!authenticated) return <Login onSuccess={load} />
@@ -206,6 +245,7 @@ export default function Admin() {
             ["portfolio", "Portfólio"],
             ["servicos", "Serviços"],
             ["depoimentos", "Depoimentos"],
+            ["pedidos", `Pedidos${requests.some((request) => request.status === "new") ? " •" : ""}`],
           ] as [Tab, string][]).map(([id, label]) => (
             <button key={id} className={tab === id ? "active" : ""} onClick={() => setTab(id)}>{label}</button>
           ))}
@@ -221,7 +261,7 @@ export default function Admin() {
           </div>
           <div className="admin-actions">
             <a href="/" target="_blank" rel="noreferrer">VER SITE ↗</a>
-            <button className="admin-primary" onClick={save} disabled={saving}>{saving ? "SALVANDO..." : "PUBLICAR ALTERAÇÕES"}</button>
+            {tab !== "pedidos" && <button className="admin-primary" onClick={save} disabled={saving}>{saving ? "SALVANDO..." : "PUBLICAR ALTERAÇÕES"}</button>}
           </div>
         </header>
         {notice && <p className="admin-notice" role="status">{notice}</p>}
@@ -312,6 +352,42 @@ export default function Admin() {
                   <Field label="TIPO DE TRABALHO" value={quote.context} onChange={(context) => setContent({ ...content, quotes: content.quotes.map((item, position) => position === index ? { ...item, context } : item) })} />
                 </div>
               </section>
+            ))}
+          </div>
+        )}
+
+        {tab === "pedidos" && (
+          <div className="admin-sections">
+            <div className="admin-list-heading">
+              <p>{requests.length} {requests.length === 1 ? "pedido recebido" : "pedidos recebidos"}</p>
+              <button className="admin-secondary" onClick={() => fetchContactRequests().then(setRequests).catch((error) => setNotice(error.message))}>ATUALIZAR</button>
+            </div>
+            {requests.length === 0 ? (
+              <section className="admin-panel admin-empty">
+                <h2>Nenhum pedido ainda</h2>
+                <p>As mensagens enviadas pelo formulário aparecerão aqui.</p>
+              </section>
+            ) : requests.map((request) => (
+              <article className={`admin-panel request-card ${request.status}`} key={request.id}>
+                <div className="request-heading">
+                  <div>
+                    <span className="request-status">{request.status === "new" ? "NOVO" : request.status === "read" ? "LIDO" : "ARQUIVADO"}</span>
+                    <h2>{request.name}</h2>
+                    <time dateTime={request.created_at}>{new Intl.DateTimeFormat("pt-BR", { dateStyle: "medium", timeStyle: "short" }).format(new Date(request.created_at))}</time>
+                  </div>
+                  <span className="request-type">{request.project_type}</span>
+                </div>
+                <p className="request-message">{request.message || "Sem mensagem adicional."}</p>
+                <div className="request-contact">
+                  <a href={`mailto:${request.email}`}>{request.email}</a>
+                  {request.phone && <a href={`tel:${request.phone}`}>{request.phone}</a>}
+                </div>
+                <div className="request-actions">
+                  {request.status !== "read" && <button onClick={() => changeRequestStatus(request.id, "read")}>MARCAR COMO LIDO</button>}
+                  {request.status !== "archived" && <button onClick={() => changeRequestStatus(request.id, "archived")}>ARQUIVAR</button>}
+                  <button className="admin-danger" onClick={() => removeRequest(request.id)}>EXCLUIR</button>
+                </div>
+              </article>
             ))}
           </div>
         )}

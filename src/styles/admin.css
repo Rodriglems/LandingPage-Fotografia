@@ -79,6 +79,25 @@
 .admin-list-heading p { color: #999; }
 .admin-item { position: relative; }
 .admin-danger { color: #ff8b76; font: 600 10px var(--font-display); letter-spacing: .15em; border-bottom: 1px solid #ff8b7655; }
+.admin-empty { text-align: center; padding-block: 70px; }
+.admin-empty h2 { margin-bottom: 10px; }
+.admin-empty p { color: #888; }
+.request-card { border-left: 2px solid #555; }
+.request-card.new { border-left-color: #ff6c00; }
+.request-card.archived { opacity: .62; }
+.request-heading { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; }
+.request-heading h2 { margin: 7px 0 3px; }
+.request-heading time { color: #777; font-size: 12px; }
+.request-status, .request-type {
+  color: #ff6c00; font: 600 10px var(--font-display); letter-spacing: .18em;
+}
+.request-type { padding: 8px 10px; color: #ddd; border: 1px solid #ffffff18; }
+.request-message { margin: 26px 0; max-width: 720px; color: #ddd; line-height: 1.7; white-space: pre-wrap; }
+.request-contact { display: flex; flex-wrap: wrap; gap: 20px; padding-top: 18px; border-top: 1px solid #ffffff12; }
+.request-contact a { color: #ff9a52; font-size: 13px; }
+.request-actions { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 26px; }
+.request-actions button { color: #aaa; font: 600 10px var(--font-display); letter-spacing: .14em; }
+.request-actions button:hover { color: #fff; }
 
 @media (max-width: 800px) {
   .admin-shell { display: block; }
