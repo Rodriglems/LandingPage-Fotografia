@@ -158,7 +158,6 @@ function Hero() {
   const ref = useRef<HTMLElement>(null)
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] })
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "-8%"])
-  const reel = content.portfolio.slice(0, 4)
 
   return (
     <section id="home" className="hero" ref={ref}>
@@ -175,13 +174,6 @@ function Hero() {
       </div>
       <div className="hero-bottom">
         <span>RETRATOS · CASAMENTOS · EDITORIAL</span>
-        <div className="hero-reel">
-          {reel.map((item) => (
-            <a key={item.id} href="#work" aria-label={`Ver ${item.title} no portfólio`}>
-              <img src={item.imageUrl} alt="" />
-            </a>
-          ))}
-        </div>
         <a className="hero-scroll" href="#work">ROLE PARA DESCOBRIR ↓</a>
       </div>
     </section>
@@ -192,8 +184,11 @@ function IntroBand() {
   const { content } = useSiteContent()
   return (
     <div className="intro-band">
-      <p>{content.intro}</p>
-      <a href="#contact">QUERO UM ENSAIO ASSIM</a>
+      <div>
+        <span className="intro-label">O OLHAR LZR</span>
+        <p>{content.intro}</p>
+      </div>
+      <a href="#contact">QUERO UM ENSAIO ASSIM <span aria-hidden="true">→</span></a>
     </div>
   )
 }

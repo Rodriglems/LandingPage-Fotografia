@@ -28,18 +28,15 @@ footer .brand-logo { width: 240px; height: auto; margin-bottom: 20px; }
 .secondary-link { color: #f5f3ef; font-size: 11px; letter-spacing: .15em; display: inline-flex; gap: 20px; padding: 16px 0; border-bottom: 1px solid #ffffff50; }
 .secondary-link:hover { color: #ff6c00; border-color: #ff6c00; }
 .hero-bottom { position: absolute; bottom: 28px; left: 64px; right: 64px; display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; border-top: 1px solid #ffffff25; padding-top: 18px; font-size: 10px; letter-spacing: .2em; color: #c9c6c0; }
-.hero-bottom .hero-scroll { color: #c9c6c0; letter-spacing: .2em; }
-@media (min-width: 768px) { .hero-bottom .hero-scroll { display: none; } }
-.hero-reel { display: flex; gap: 8px; }
-.hero-reel a { width: 74px; height: 96px; overflow: hidden; border: 1px solid rgba(255,255,255,.28); flex-shrink: 0; }
-.hero-reel img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease; }
-.hero-reel a:hover img { transform: scale(1.08); }
+.hero-bottom .hero-scroll { color: #c9c6c0; letter-spacing: .2em; transition: color .2s; }
+.hero-bottom .hero-scroll:hover { color: #ff6c00; }
 .nav-link { position: relative; }
 .nav-link.is-active { color: #fff; }
 .nav-link.is-active::after { content: ""; position: absolute; left: 0; right: 0; bottom: -8px; height: 1px; background: #ff6c00; }
-.intro-band { display: flex; justify-content: space-between; align-items: center; gap: 32px; padding: 28px 64px; background: #181818; border-bottom: 1px solid rgba(255,255,255,.08); }
-.intro-band p { margin: 0; max-width: 640px; color: #d9d6d1; font-size: 15px; line-height: 1.7; }
-.intro-band a { flex-shrink: 0; color: #f5f3ef; font-size: 11px; letter-spacing: .18em; border-bottom: 1px solid rgba(255,255,255,.35); padding-bottom: 6px; }
+.intro-band { display: flex; justify-content: space-between; align-items: flex-end; gap: 64px; padding: 72px 64px; background: #181818; border-bottom: 1px solid rgba(255,255,255,.08); }
+.intro-label { display: block; margin-bottom: 18px; color: #ff6c00; font: 500 10px var(--font-display); letter-spacing: .28em; }
+.intro-band p { margin: 0; max-width: 780px; color: #e4e1dc; font: 400 clamp(20px,2.2vw,31px)/1.45 Georgia, 'Times New Roman', serif; }
+.intro-band a { display: inline-flex; align-items: center; gap: 22px; flex-shrink: 0; color: #f5f3ef; font-size: 11px; letter-spacing: .18em; border-bottom: 1px solid rgba(255,255,255,.35); padding-bottom: 8px; }
 .intro-band a:hover { color: #ff6c00; border-color: #ff6c00; }
 .filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 28px; }
 .filters button { border: 1px solid rgba(255,255,255,.16); background: transparent; color: rgba(255,255,255,.72); padding: 10px 16px; font-size: 11px; letter-spacing: .16em; font-family: var(--font-display); transition: color .2s, border-color .2s, background .2s; }
@@ -103,16 +100,15 @@ footer .brand-logo { width: 240px; height: auto; margin-bottom: 20px; }
 @media (max-width: 1024px) {
   .work-grid, .service-grid, .quote-grid { columns: unset; grid-template-columns: 1fr 1fr; }
   .work-grid { columns: 2; }
-  .hero-reel a:nth-child(n + 4) { display: none; }
 }
 @media (max-width: 767px) {
   .brand-logo { width: 158px; height: 68px; }
   nav { padding-inline: 24px !important; }
   .hero { min-height: 720px; max-height: none; }
   .hero-content { padding: 140px 24px 108px; }
-  .hero-reel { display: none; }
   .intro-band, .gallery-section { padding-left: 24px; padding-right: 24px; }
-  .intro-band { flex-direction: column; align-items: flex-start; gap: 16px; padding-top: 28px; padding-bottom: 28px; }
+  .intro-band { flex-direction: column; align-items: flex-start; gap: 30px; padding-top: 52px; padding-bottom: 52px; }
+  .intro-band p { font-size: 20px; }
   .work-grid, .service-grid, .quote-grid { columns: 1; grid-template-columns: 1fr; }
   .service-card { min-height: 320px; }
   .hero h1 { font-size: clamp(52px,10vw,76px); }
