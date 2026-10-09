@@ -82,6 +82,8 @@ footer .brand-logo { width: 240px; height: auto; margin-bottom: 20px; }
 .filmstrip-track figure { flex: 0 0 min(78vw, 520px); scroll-snap-align: start; margin: 0; }
 .field-label { display: block; margin-bottom: 6px; color: rgba(255,255,255,.62); font: 500 10px var(--font-display); letter-spacing: .22em; }
 .contact-note { margin: 0; color: rgba(255,255,255,.55); font-size: 13px; line-height: 1.6; }
+.contact-honeypot { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.contact-error { margin: 0; padding: 12px 14px; color: #ffb28a; background: rgba(255,108,0,.08); border: 1px solid rgba(255,108,0,.3); font-size: 13px; }
 #work, #services, .gallery-section { max-width: 1568px; margin-inline: auto; }
 .portfolio-card { width: 100%; border-radius: 3px; }
 .portfolio-card > div { opacity: 1; }

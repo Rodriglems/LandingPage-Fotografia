@@ -13,6 +13,17 @@ interface AuthSession {
   user: { email?: string }
 }
 
+export interface ContactRequest {
+  id: string
+  name: string
+  email: string
+  phone: string
+  project_type: string
+  message: string
+  status: "new" | "read" | "archived"
+  created_at: string
+}
+
 function readSession(): AuthSession | null {
   try {
     return JSON.parse(localStorage.getItem(sessionKey) || "null")
@@ -96,6 +107,51 @@ export async function saveSiteContent(content: SiteContent) {
       Prefer: "return=minimal",
     },
     body: JSON.stringify({ content, updated_at: new Date().toISOString() }),
+  }, session.access_token)
+}
+
+export async function createContactRequest(data: {
+  name: string
+  email: string
+  phone: string
+  project_type: string
+  message: string
+}) {
+  await request("/rest/v1/contact_requests", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Prefer: "return=minimal",
+    },
+    body: JSON.stringify(data),
+  })
+}
+
+export async function fetchContactRequests(): Promise<ContactRequest[]> {
+  const session = await getSession()
+  if (!session) throw new Error("Sua sessão expirou. Entre novamente.")
+  return await request("/rest/v1/contact_requests?select=*&order=created_at.desc", {}, session.access_token)
+}
+
+export async function updateContactRequest(id: string, status: ContactRequest["status"]) {
+  const session = await getSession()
+  if (!session) throw new Error("Sua sessão expirou. Entre novamente.")
+  await request(`/rest/v1/contact_requests?id=eq.${encodeURIComponent(id)}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Prefer: "return=minimal",
+    },
+    body: JSON.stringify({ status }),
+  }, session.access_token)
+}
+
+export async function deleteContactRequest(id: string) {
+  const session = await getSession()
+  if (!session) throw new Error("Sua sessão expirou. Entre novamente.")
+  await request(`/rest/v1/contact_requests?id=eq.${encodeURIComponent(id)}`, {
+    method: "DELETE",
+    headers: { Prefer: "return=minimal" },
   }, session.access_token)
 }
 

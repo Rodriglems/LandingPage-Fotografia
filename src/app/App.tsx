@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, useRef, type ReactNode } from "react"
 import { motion, useScroll, useTransform, AnimatePresence, MotionConfig } from "motion/react"
 import { SiteContentProvider, useSiteContent } from "@/context/SiteContentContext"
 import type { PortfolioItem } from "@/lib/site-content"
+import { createContactRequest } from "@/lib/supabase-rest"
 
 const categories = ["Todos", "Casamentos", "Retratos", "Editorial", "Eventos", "Marcas"] as const
 
@@ -715,10 +716,29 @@ function Contact() {
   const { content } = useSiteContent()
   const [form, setForm] = useState({ name: "", email: "", phone: "", type: "", message: "" })
   const [sent, setSent] = useState(false)
+  const [sending, setSending] = useState(false)
+  const [error, setError] = useState("")
+  const [website, setWebsite] = useState("")
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setSent(true)
+    if (website) return
+    setSending(true)
+    setError("")
+    try {
+      await createContactRequest({
+        name: form.name.trim(),
+        email: form.email.trim(),
+        phone: form.phone.trim(),
+        project_type: form.type,
+        message: form.message.trim(),
+      })
+      setSent(true)
+    } catch (submitError) {
+      setError(submitError instanceof Error ? submitError.message : "Não foi possível enviar. Tente novamente.")
+    } finally {
+      setSending(false)
+    }
   }
 
   const inputClass =
@@ -780,11 +800,16 @@ function Contact() {
                 Pedido anotado.
               </p>
               <p className="text-sm text-white/75" style={{ fontFamily: "var(--font-body)" }}>
-                Obrigado{form.name ? `, ${form.name.split(" ")[0]}` : ""}. Seu interesse{form.type ? ` em ${form.type.toLowerCase()}` : ""} ficou registrado nesta página. Assim que o envio automático entrar no ar, este pedido segue direto para a LZR.
+                Obrigado{form.name ? `, ${form.name.split(" ")[0]}` : ""}. Seu pedido{form.type ? ` de ${form.type.toLowerCase()}` : ""} foi enviado para a LZR.
               </p>
+              <button type="button" className="secondary-link mt-8" onClick={() => { setSent(false); setForm({ name: "", email: "", phone: "", type: "", message: "" }) }}>ENVIAR OUTRO PEDIDO</button>
             </div>
           ) : (
             <form onSubmit={submit} className="space-y-7">
+              <div className="contact-honeypot" aria-hidden="true">
+                <label htmlFor="website">Site</label>
+                <input id="website" tabIndex={-1} autoComplete="off" value={website} onChange={(e) => setWebsite(e.target.value)} />
+              </div>
               <div>
                 <label htmlFor="name" className="field-label">NOME</label>
                 <input id="name" type="text" autoComplete="name" required className={inputClass} style={{ fontFamily: "var(--font-body)" }} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
@@ -810,11 +835,12 @@ function Contact() {
                 <label htmlFor="message" className="field-label">MENSAGEM</label>
                 <textarea id="message" placeholder="Data, cidade e o que você quer registrar" rows={4} className={`${inputClass} resize-none`} style={{ fontFamily: "var(--font-body)" }} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} />
               </div>
-              <button type="submit" className="w-full border border-white/20 hover:border-[#FF6C00] hover:bg-[#FF6C00] text-white hover:text-[#181818] py-4 text-xs tracking-[0.3em] transition-all duration-300 flex items-center justify-center gap-4 group" style={{ fontFamily: "var(--font-display)" }}>
-                ENVIAR PEDIDO
+              {error && <p role="alert" className="contact-error">{error}</p>}
+              <button type="submit" disabled={sending} className="w-full border border-white/20 hover:border-[#FF6C00] hover:bg-[#FF6C00] text-white hover:text-[#181818] py-4 text-xs tracking-[0.3em] transition-all duration-300 flex items-center justify-center gap-4 group" style={{ fontFamily: "var(--font-display)" }}>
+                {sending ? "ENVIANDO..." : "ENVIAR PEDIDO"}
                 <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
               </button>
-              <p className="contact-note">O envio automático ainda está em preparação. O pedido fica registrado nesta página até o canal entrar no ar.</p>
+              <p className="contact-note">Seus dados serão usados somente para responder a este pedido.</p>
             </form>
           )}
         </Reveal>
