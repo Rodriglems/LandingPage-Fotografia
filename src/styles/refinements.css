@@ -11,10 +11,10 @@ section { scroll-margin-top: 24px; }
 footer .brand-logo { width: 240px; height: auto; margin-bottom: 20px; }
 .skip-link { position: fixed; top: -100px; left: 20px; z-index: 200; padding: 12px 20px; background: #ff6c00; color: #181818; }
 .skip-link:focus { top: 12px; }
-.hero { position: relative; min-height: 760px; height: 100svh; max-height: 1100px; display: flex; align-items: center; isolation: isolate; background: #212121; }
+.hero { position: relative; min-height: 760px; height: 100svh; max-height: 1100px; display: flex; align-items: center; isolation: isolate; overflow: hidden; background: #181818; }
 .hero-image, .hero-shade { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; }
 .hero-image { object-position: center 42%; transform-origin: center center; }
-.hero-shade { background: linear-gradient(180deg, rgba(16,16,16,.72), transparent 24%), linear-gradient(90deg, rgba(16,16,16,.78) 0%, rgba(16,16,16,.42) 46%, rgba(16,16,16,.12) 100%), linear-gradient(0deg, #181818 0%, transparent 32%); }
+.hero-shade { background: linear-gradient(180deg, rgba(16,16,16,.72), transparent 24%), linear-gradient(90deg, rgba(16,16,16,.78) 0%, rgba(16,16,16,.42) 46%, rgba(16,16,16,.18) 100%), linear-gradient(to top, #181818 0%, #181818 18%, transparent 46%); }
 .hero-content { width: min(1440px,100%); margin: 0 auto; padding: 150px 64px 168px; }
 .eyebrow { display: flex; align-items: center; gap: 14px; color: #ff6c00; font: 500 12px var(--font-body); letter-spacing: .24em; margin-bottom: 28px; }
 .eyebrow > span { width: 25px; height: 1px; background: currentColor; }
