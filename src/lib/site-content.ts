@@ -27,6 +27,42 @@ export interface QuoteItem {
   context: string
 }
 
+export interface PromiseItem {
+  title: string
+  desc: string
+}
+
+export interface ProcessStep {
+  title: string
+  desc: string
+}
+
+export interface PageSections {
+  portfolioEyebrow: string
+  portfolioTitle: string
+  portfolioNote: string
+  servicesEyebrow: string
+  servicesTitle: string
+  processEyebrow: string
+  processTitle: string
+  quotesEyebrow: string
+  quotesTitle: string
+  archiveEyebrow: string
+  archiveTitle: string
+  contactEyebrow: string
+  contactTitle: string
+  footerTagline: string
+}
+
+export interface CtaContent {
+  eyebrow: string
+  line1: string
+  line2: string
+  line3: string
+  text: string
+  button: string
+}
+
 export interface SiteContent {
   brand: {
     logoUrl: string
@@ -37,7 +73,9 @@ export interface SiteContent {
     titleAccent: string
     description: string
     imageUrl: string
+    meta: string
   }
+  introLabel: string
   intro: string
   portfolio: PortfolioItem[]
   about: {
@@ -45,12 +83,19 @@ export interface SiteContent {
     paragraph1: string
     paragraph2: string
     imageUrl: string
+    imageAlt: string
+    caption: string
+    promises: PromiseItem[]
   }
   services: ServiceItem[]
   quotes: QuoteItem[]
+  process: ProcessStep[]
+  sections: PageSections
+  cta: CtaContent
   cinematic: {
     text: string
     imageUrl: string
+    imageAlt: string
   }
   contact: {
     email: string
@@ -73,7 +118,9 @@ export const defaultSiteContent: SiteContent = {
     titleAccent: "Ficam para sempre.",
     description: "Casamentos, retratos e campanhas com direção de cena. Um portfólio para quem quer imagens com presença — e uma lembrança que ainda se sente.",
     imageUrl: photo("1511285560929-80b456fea0bc", 2000),
+    meta: "RETRATOS · CASAMENTOS · EDITORIAL",
   },
+  introLabel: "O OLHAR LZR",
   intro: "O trabalho entra primeiro. Abaixo, uma seleção de ensaios — casamentos, retratos, editorial, eventos e marcas — no jeito em que a LZR gosta de contar uma história.",
   portfolio: [
     { id: 1, number: "01", title: "Hora dourada", category: "Casamentos", year: "2026", imageUrl: photo("1519741497674-611481863552"), alt: "Casal de noivos em um momento íntimo", layout: "feature" },
@@ -95,6 +142,13 @@ export const defaultSiteContent: SiteContent = {
     paragraph1: "Na LZR Fotografia, o ensaio começa com uma conversa e termina numa galeria pronta para guardar, imprimir e publicar. O cotidiano entra no quadro quando a luz, a direção e o tempo estão certos.",
     paragraph2: "Casamentos, retratos, editorial e marcas. Cada trabalho tem um recorte próprio — e a mesma promessa: imagem com presença, não apenas um registro.",
     imageUrl: photo("1452587925148-ce544e77e70d", 1200),
+    imageAlt: "Fotógrafo em ensaio ao ar livre, visto de lado",
+    caption: "POR TRÁS DAS LENTES",
+    promises: [
+      { title: "Direção de cena", desc: "Referências, luz e condução para o ensaio acontecer com calma." },
+      { title: "Edição autoral", desc: "Cor, seleção e acabamento com um olhar consistente." },
+      { title: "Galeria privada", desc: "Arquivos organizados para guardar, imprimir e divulgar." },
+    ],
   },
   services: [
     { number: "01", title: "Casamentos", desc: "Do preparo ao último brinde, com direção calma e olhar de cinema.", url: photo("1511285560929-80b456fea0bc", 900) },
@@ -109,9 +163,40 @@ export const defaultSiteContent: SiteContent = {
     { text: "O ensaio deu rosto à marca. Essas imagens passaram a abrir todas as apresentações.", name: "Caio", context: "Marca pessoal" },
     { text: "Foi leve. As fotos não parecem posadas — parecem a nossa casa de verdade.", name: "Helena", context: "Retrato de família" },
   ],
+  process: [
+    { title: "DESCOBRIR", desc: "Tudo começa com uma boa conversa: sua visão, seu público e o sentimento que você quer registrar." },
+    { title: "CRIAR", desc: "Direção, referências e estratégia criativa se encontram para dar forma à sua ideia." },
+    { title: "REGISTRAR", desc: "O ensaio: atenção aos detalhes, presença e calma. Cada imagem tem um propósito." },
+    { title: "ENTREGAR", desc: "Fotos selecionadas, editadas e entregues. Sua galeria pronta para compartilhar e guardar." },
+  ],
+  sections: {
+    portfolioEyebrow: "PORTFÓLIO",
+    portfolioTitle: "Trabalhos\nselecionados",
+    portfolioNote: "Uma seleção para mostrar o olhar.\nClique para ver em tela cheia.",
+    servicesEyebrow: "O QUE FAÇO",
+    servicesTitle: "Serviços",
+    processEyebrow: "COMO FUNCIONA",
+    processTitle: "O processo",
+    quotesEyebrow: "DEPOIMENTOS",
+    quotesTitle: "O que fica\ndepois do ensaio",
+    archiveEyebrow: "ARQUIVO",
+    archiveTitle: "Passe o olhar pelo trabalho.",
+    contactEyebrow: "ENTRE EM CONTATO",
+    contactTitle: "Vamos\nconversar",
+    footerTagline: "FOTOGRAFIA / HISTÓRIAS EM IMAGENS",
+  },
+  cta: {
+    eyebrow: "Vamos trabalhar juntos",
+    line1: "Vamos criar",
+    line2: "algo",
+    line3: "inesquecível.",
+    text: "Ensaios, casamentos e campanhas com vaga para novos projetos.",
+    button: "COMECE UM PROJETO",
+  },
   cinematic: {
     text: "Cada imagem conta uma história.",
     imageUrl: photo("1529634597503-139d3726fed5", 2000),
+    imageAlt: "Casal em close durante um ensaio",
   },
   contact: {
     email: "Em breve",
@@ -119,4 +204,30 @@ export const defaultSiteContent: SiteContent = {
     location: "Com agendamento",
     instagram: "",
   },
+}
+
+export function mergeSiteContent(remote?: Partial<SiteContent> | null): SiteContent {
+  if (!remote) return defaultSiteContent
+  const about = remote.about
+  return {
+    ...defaultSiteContent,
+    ...remote,
+    brand: { ...defaultSiteContent.brand, ...remote.brand },
+    hero: { ...defaultSiteContent.hero, ...remote.hero },
+    introLabel: remote.introLabel || defaultSiteContent.introLabel,
+    intro: remote.intro || defaultSiteContent.intro,
+    portfolio: Array.isArray(remote.portfolio) ? remote.portfolio : defaultSiteContent.portfolio,
+    about: {
+      ...defaultSiteContent.about,
+      ...about,
+      promises: about?.promises ?? defaultSiteContent.about.promises,
+    },
+    services: Array.isArray(remote.services) ? remote.services : defaultSiteContent.services,
+    quotes: Array.isArray(remote.quotes) ? remote.quotes : defaultSiteContent.quotes,
+    process: remote.process ?? defaultSiteContent.process,
+    sections: { ...defaultSiteContent.sections, ...remote.sections },
+    cta: { ...defaultSiteContent.cta, ...remote.cta },
+    cinematic: { ...defaultSiteContent.cinematic, ...remote.cinematic },
+    contact: { ...defaultSiteContent.contact, ...remote.contact },
+  }
 }

@@ -6,6 +6,21 @@ import { createContactRequest } from "@/lib/supabase-rest"
 
 const categories = ["Todos", "Casamentos", "Retratos", "Editorial", "Eventos", "Marcas"] as const
 
+function withBreaks(text: string) {
+  return text.split("\n").map((line, index) => (
+    <span key={`${line}-${index}`}>
+      {index > 0 && <br />}
+      {line}
+    </span>
+  ))
+}
+
+function instagramHref(value: string) {
+  const trimmed = value.trim()
+  if (/^https?:\/\//i.test(trimmed)) return trimmed
+  return `https://instagram.com/${trimmed.replace(/^@/, "")}`
+}
+
 // ─── CUSTOM CURSOR ────────────────────────────────────────────────────────────
 
 function BrandLogo({ className = "" }: { className?: string }) {
@@ -173,7 +188,7 @@ function Hero() {
         </div>
       </div>
       <div className="hero-bottom">
-        <span>RETRATOS · CASAMENTOS · EDITORIAL</span>
+        <span>{content.hero.meta}</span>
         <a className="hero-scroll" href="#work">ROLE PARA DESCOBRIR ↓</a>
       </div>
     </section>
@@ -185,7 +200,7 @@ function IntroBand() {
   return (
     <div className="intro-band">
       <div>
-        <span className="intro-label">O OLHAR LZR</span>
+        <span className="intro-label">{content.introLabel}</span>
         <p>{content.intro}</p>
       </div>
       <a href="#contact">QUERO UM ENSAIO ASSIM <span aria-hidden="true">→</span></a>
@@ -328,18 +343,14 @@ function Portfolio() {
         <div className="flex items-end justify-between mb-8 md:mb-10">
           <div>
             <p className="text-xs tracking-[0.35em] text-[#FF6C00] mb-4" style={{ fontFamily: "var(--font-display)" }}>
-              PORTFÓLIO
+              {content.sections.portfolioEyebrow}
             </p>
             <h2 className="text-5xl md:text-7xl font-black uppercase leading-none text-white" style={{ fontFamily: "var(--font-display)" }}>
-              Trabalhos
-              <br />
-              selecionados
+              {withBreaks(content.sections.portfolioTitle)}
             </h2>
           </div>
           <p className="hidden md:block text-sm text-white/70 max-w-xs text-right leading-relaxed" style={{ fontFamily: "var(--font-body)" }}>
-            Uma seleção para mostrar o olhar.
-            <br />
-            Clique para ver em tela cheia.
+            {withBreaks(content.sections.portfolioNote)}
           </p>
         </div>
       </Reveal>
@@ -392,7 +403,7 @@ function About() {
           >
             <img
               src={content.about.imageUrl}
-              alt="Fotógrafo em ensaio ao ar livre, visto de lado"
+              alt={content.about.imageAlt}
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#181818]/40 to-transparent" />
@@ -403,7 +414,7 @@ function About() {
                 className="text-xs tracking-[0.3em] text-white/50"
                 style={{ fontFamily: "var(--font-display)" }}
               >
-                POR TRÁS DAS LENTES
+                {content.about.caption}
               </p>
             </div>
           </div>
@@ -444,11 +455,7 @@ function About() {
 
           <Reveal delay={0.2}>
             <div className="promise-list">
-              {[
-                { title: "Direção de cena", desc: "Referências, luz e condução para o ensaio acontecer com calma." },
-                { title: "Edição autoral", desc: "Cor, seleção e acabamento com um olhar consistente." },
-                { title: "Galeria privada", desc: "Arquivos organizados para guardar, imprimir e divulgar." },
-              ].map((item) => (
+              {content.about.promises.map((item) => (
                 <article key={item.title}>
                   <span className="mark" aria-hidden="true" />
                   <div>
@@ -477,13 +484,13 @@ function Services() {
             className="text-xs tracking-[0.35em] text-[#FF6C00] mb-4"
             style={{ fontFamily: "var(--font-display)" }}
           >
-            O QUE FAÇO
+            {content.sections.servicesEyebrow}
           </p>
           <h2
             className="text-5xl md:text-7xl font-black uppercase leading-none text-white"
             style={{ fontFamily: "var(--font-display)" }}
           >
-            Serviços
+            {content.sections.servicesTitle}
           </h2>
         </div>
       </Reveal>
@@ -509,12 +516,11 @@ function Services() {
 // ─── PROCESS ──────────────────────────────────────────────────────────────────
 
 function Process() {
-  const steps = [
-    { n: "01", title: "DESCOBRIR", desc: "Tudo começa com uma boa conversa: sua visão, seu público e o sentimento que você quer registrar." },
-    { n: "02", title: "CRIAR", desc: "Direção, referências e estratégia criativa se encontram para dar forma à sua ideia." },
-    { n: "03", title: "REGISTRAR", desc: "O ensaio: atenção aos detalhes, presença e calma. Cada imagem tem um propósito." },
-    { n: "04", title: "ENTREGAR", desc: "Fotos selecionadas, editadas e entregues. Sua galeria pronta para compartilhar e guardar." },
-  ]
+  const { content } = useSiteContent()
+  const steps = content.process.map((step, index) => ({
+    ...step,
+    n: String(index + 1).padStart(2, "0"),
+  }))
 
   return (
     <section className="py-28 md:py-40 px-8 md:px-16 bg-[#212121]">
@@ -524,13 +530,13 @@ function Process() {
             className="text-xs tracking-[0.35em] text-[#FF6C00] mb-4"
             style={{ fontFamily: "var(--font-display)" }}
           >
-            COMO FUNCIONA
+            {content.sections.processEyebrow}
           </p>
           <h2
             className="text-5xl md:text-7xl font-black uppercase leading-none text-white"
             style={{ fontFamily: "var(--font-display)" }}
           >
-            O processo
+            {content.sections.processTitle}
           </h2>
         </div>
       </Reveal>
@@ -580,7 +586,7 @@ function CinematicQuote() {
       <motion.div className="absolute inset-0" style={{ scale }}>
         <img
           src={content.cinematic.imageUrl}
-          alt="Casal em close durante um ensaio"
+          alt={content.cinematic.imageAlt}
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-black/60" />
@@ -611,11 +617,9 @@ function Quotes() {
   return (
     <section className="py-24 md:py-32 px-8 md:px-16 bg-[#181818]" aria-label="Depoimentos">
       <Reveal>
-        <p className="text-xs tracking-[0.35em] text-[#FF6C00] mb-4" style={{ fontFamily: "var(--font-display)" }}>DEPOIMENTOS</p>
+        <p className="text-xs tracking-[0.35em] text-[#FF6C00] mb-4" style={{ fontFamily: "var(--font-display)" }}>{content.sections.quotesEyebrow}</p>
         <h2 className="text-5xl md:text-6xl font-black uppercase leading-none text-white mb-14" style={{ fontFamily: "var(--font-display)" }}>
-          O que fica
-          <br />
-          depois do ensaio
+          {withBreaks(content.sections.quotesTitle)}
         </h2>
       </Reveal>
       <div className="quote-grid">
@@ -643,8 +647,8 @@ function Filmstrip() {
     <section className="gallery-section filmstrip" aria-label="Arquivo de imagens">
       <div className="gallery-heading">
         <div>
-          <p className="eyebrow"><span />ARQUIVO</p>
-          <h2>Passe o olhar pelo trabalho.</h2>
+          <p className="eyebrow"><span />{content.sections.archiveEyebrow}</p>
+          <h2>{content.sections.archiveTitle}</h2>
         </div>
         <div className="gallery-controls">
           <button type="button" aria-label="Imagens anteriores" onClick={() => scroll(-1)}>←</button>
@@ -666,6 +670,7 @@ function Filmstrip() {
 // ─── CTA ──────────────────────────────────────────────────────────────────────
 
 function CTA() {
+  const { content } = useSiteContent()
   return (
     <section className="py-28 md:py-48 px-8 md:px-16 bg-[#212121] text-center">
       <Reveal>
@@ -673,23 +678,23 @@ function CTA() {
           className="text-xs tracking-[0.4em] text-[#FF6C00] mb-8 uppercase"
           style={{ fontFamily: "var(--font-display)" }}
         >
-          Vamos trabalhar juntos
+          {content.cta.eyebrow}
         </p>
         <h2
           className="text-[10vw] md:text-[7vw] font-black uppercase leading-none text-white mb-8"
           style={{ fontFamily: "var(--font-display)" }}
         >
-          {"Vamos criar"}
+          {content.cta.line1}
           <br />
-          <span className="text-white/60">algo</span>
+          <span className="text-white/60">{content.cta.line2}</span>
           <br />
-          inesquecível.
+          {content.cta.line3}
         </h2>
         <p
           className="text-white/60 text-sm mb-14 max-w-sm mx-auto leading-relaxed"
           style={{ fontFamily: "var(--font-body)" }}
         >
-          Ensaios, casamentos e campanhas com vaga para novos projetos.
+          {content.cta.text}
         </p>
         <a
           href="#contact"
@@ -697,7 +702,7 @@ function CTA() {
           style={{ fontFamily: "var(--font-display)" }}
           data-cursor-link
         >
-          COMECE UM PROJETO
+          {content.cta.button}
           <span className="transition-transform duration-300 group-hover:translate-x-2">→</span>
         </a>
       </Reveal>
@@ -748,22 +753,21 @@ function Contact() {
               className="text-xs tracking-[0.35em] text-[#FF6C00] mb-6"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              ENTRE EM CONTATO
+              {content.sections.contactEyebrow}
             </p>
             <h2
               className="text-5xl md:text-6xl font-black uppercase leading-none text-white mb-10"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              {"Vamos"}
-              <br />
-              conversar
+              {withBreaks(content.sections.contactTitle)}
             </h2>
             <div className="space-y-5">
               {[
                 { label: "E-MAIL", val: content.contact.email },
                 { label: "TELEFONE", val: content.contact.phone },
                 { label: "ATENDIMENTO", val: content.contact.location },
-              ].map((info) => (
+                { label: "INSTAGRAM", val: content.contact.instagram },
+              ].filter((info) => info.val.trim()).map((info) => (
                 <div key={info.label}>
                   <p
                     className="text-[10px] tracking-[0.3em] text-white/60 mb-1"
@@ -771,12 +775,16 @@ function Contact() {
                   >
                     {info.label}
                   </p>
-                  <p
-                    className="text-sm text-white/60"
-                    style={{ fontFamily: "var(--font-body)" }}
-                  >
-                    {info.val}
-                  </p>
+                  {info.label === "INSTAGRAM" ? (
+                    <a className="text-sm text-white/60 hover:text-[#FF6C00]" style={{ fontFamily: "var(--font-body)" }} href={instagramHref(info.val)} target="_blank" rel="noreferrer">{info.val}</a>
+                  ) : (
+                    <p
+                      className="text-sm text-white/60"
+                      style={{ fontFamily: "var(--font-body)" }}
+                    >
+                      {info.val}
+                    </p>
+                  )}
                 </div>
               ))}
             </div>
@@ -858,7 +866,7 @@ function Footer() {
               className="text-[10px] tracking-[0.3em] text-white/60"
               style={{ fontFamily: "var(--font-display)" }}
             >
-              FOTOGRAFIA / HISTÓRIAS EM IMAGENS
+              {content.sections.footerTagline}
             </p>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 text-right">
@@ -866,7 +874,8 @@ function Footer() {
               { label: "E-MAIL", val: content.contact.email },
               { label: "TELEFONE", val: content.contact.phone },
               { label: "ATENDIMENTO", val: content.contact.location },
-            ].map((info) => (
+              { label: "INSTAGRAM", val: content.contact.instagram },
+            ].filter((info) => info.val.trim()).map((info) => (
               <div key={info.label}>
                 <p
                   className="text-[9px] tracking-[0.3em] text-white/60 mb-1"
@@ -874,12 +883,16 @@ function Footer() {
                 >
                   {info.label}
                 </p>
-                <p
-                  className="text-xs text-white/65"
-                  style={{ fontFamily: "var(--font-body)" }}
-                >
-                  {info.val}
-                </p>
+                {info.label === "INSTAGRAM" ? (
+                  <a className="text-xs text-white/65 hover:text-[#FF6C00]" style={{ fontFamily: "var(--font-body)" }} href={instagramHref(info.val)} target="_blank" rel="noreferrer">{info.val}</a>
+                ) : (
+                  <p
+                    className="text-xs text-white/65"
+                    style={{ fontFamily: "var(--font-body)" }}
+                  >
+                    {info.val}
+                  </p>
+                )}
               </div>
             ))}
           </div>
@@ -890,7 +903,7 @@ function Footer() {
             className="text-[10px] tracking-[0.2em] text-white/60"
             style={{ fontFamily: "var(--font-display)" }}
           >
-            © 2026 — TODOS OS DIREITOS RESERVADOS
+            © {new Date().getFullYear()} — TODOS OS DIREITOS RESERVADOS
           </p>
           <div className="flex items-center gap-8">
 

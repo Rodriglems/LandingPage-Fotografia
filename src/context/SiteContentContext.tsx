@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react"
-import { defaultSiteContent, type SiteContent } from "@/lib/site-content"
+import { defaultSiteContent, mergeSiteContent, type SiteContent } from "@/lib/site-content"
 import { fetchSiteContent } from "@/lib/supabase-rest"
 
 interface SiteContentState {
@@ -19,7 +19,7 @@ export function SiteContentProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     fetchSiteContent()
       .then((remote) => {
-        if (remote) setContent({ ...defaultSiteContent, ...remote })
+        if (remote) setContent(mergeSiteContent(remote))
       })
       .catch((error) => console.error("Não foi possível carregar o conteúdo remoto:", error))
       .finally(() => setLoading(false))

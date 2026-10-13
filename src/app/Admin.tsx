@@ -1,6 +1,6 @@
 import { useEffect, useState, type ChangeEvent, type FormEvent } from "react"
 import logoSrc from "@/imports/LogoLuze-Photoroom (1).png"
-import { defaultSiteContent, type PortfolioItem, type SiteContent, type WorkCategory, type WorkLayout } from "@/lib/site-content"
+import { defaultSiteContent, mergeSiteContent, type PortfolioItem, type SiteContent, type WorkCategory, type WorkLayout } from "@/lib/site-content"
 import {
   deleteContactRequest,
   fetchContactRequests,
@@ -157,7 +157,7 @@ export default function Admin() {
     setAuthenticated(Boolean(session))
     if (session) {
       const remote = await fetchSiteContent()
-      if (remote) setContent({ ...defaultSiteContent, ...remote })
+      if (remote) setContent(mergeSiteContent(remote))
       try {
         setRequests(await fetchContactRequests())
       } catch {
@@ -192,20 +192,23 @@ export default function Admin() {
     }))
   }
 
+  const renumber = <T extends { number: string }>(items: T[]) =>
+    items.map((item, index) => ({ ...item, number: String(index + 1).padStart(2, "0") }))
+
   const addPortfolio = () => {
     const nextId = Math.max(0, ...content.portfolio.map((item) => item.id)) + 1
     setContent((current) => ({
       ...current,
-      portfolio: [...current.portfolio, {
+        portfolio: renumber([...current.portfolio, {
         id: nextId,
-        number: String(current.portfolio.length + 1).padStart(2, "0"),
+        number: "",
         title: "Novo trabalho",
         category: "Retratos",
         year: String(new Date().getFullYear()),
         imageUrl: defaultSiteContent.portfolio[0].imageUrl,
         alt: "Descrição da fotografia",
         layout: "standard",
-      }],
+      }]),
     }))
   }
 
@@ -282,14 +285,29 @@ export default function Admin() {
                 <Field label="TÍTULO EM DESTAQUE" value={content.hero.titleAccent} onChange={(titleAccent) => setContent({ ...content, hero: { ...content.hero, titleAccent } })} />
               </div>
               <Field label="DESCRIÇÃO" multiline value={content.hero.description} onChange={(description) => setContent({ ...content, hero: { ...content.hero, description } })} />
+              <Field label="LINHA DE BAIXO" value={content.hero.meta} onChange={(meta) => setContent({ ...content, hero: { ...content.hero, meta } })} />
+              <Field label="RÓTULO DA INTRODUÇÃO" value={content.introLabel} onChange={(introLabel) => setContent({ ...content, introLabel })} />
               <Field label="TEXTO DE INTRODUÇÃO" multiline value={content.intro} onChange={(intro) => setContent({ ...content, intro })} />
             </section>
             <section className="admin-panel">
               <h2>Sobre</h2>
               <ImageField label="IMAGEM SOBRE" value={content.about.imageUrl} onChange={(imageUrl) => setContent({ ...content, about: { ...content.about, imageUrl } })} />
               <Field label="TÍTULO" value={content.about.title} onChange={(title) => setContent({ ...content, about: { ...content.about, title } })} />
+              <Field label="LEGENDA DA FOTO" value={content.about.caption} onChange={(caption) => setContent({ ...content, about: { ...content.about, caption } })} />
+              <Field label="TEXTO ALTERNATIVO DA FOTO" value={content.about.imageAlt} onChange={(imageAlt) => setContent({ ...content, about: { ...content.about, imageAlt } })} />
               <Field label="PRIMEIRO PARÁGRAFO" multiline value={content.about.paragraph1} onChange={(paragraph1) => setContent({ ...content, about: { ...content.about, paragraph1 } })} />
               <Field label="SEGUNDO PARÁGRAFO" multiline value={content.about.paragraph2} onChange={(paragraph2) => setContent({ ...content, about: { ...content.about, paragraph2 } })} />
+              <div className="admin-list-heading">
+                <h2>Promessas</h2>
+                <button className="admin-secondary" type="button" onClick={() => setContent({ ...content, about: { ...content.about, promises: [...content.about.promises, { title: "Nova promessa", desc: "Descreva o que está incluído." }] } })}>+ ADICIONAR</button>
+              </div>
+              {content.about.promises.map((promise, index) => (
+                <div className="admin-nested" key={`promise-${index}`}>
+                  <Field label="TÍTULO" value={promise.title} onChange={(title) => setContent({ ...content, about: { ...content.about, promises: content.about.promises.map((item, position) => position === index ? { ...item, title } : item) } })} />
+                  <Field label="DESCRIÇÃO" multiline value={promise.desc} onChange={(desc) => setContent({ ...content, about: { ...content.about, promises: content.about.promises.map((item, position) => position === index ? { ...item, desc } : item) } })} />
+                  <button className="admin-danger" type="button" onClick={() => setContent({ ...content, about: { ...content.about, promises: content.about.promises.filter((_, position) => position !== index) } })}>REMOVER PROMESSA</button>
+                </div>
+              ))}
             </section>
             <section className="admin-panel">
               <h2>Contato</h2>
@@ -299,11 +317,58 @@ export default function Admin() {
                 <Field label="LOCAL / ATENDIMENTO" value={content.contact.location} onChange={(location) => setContent({ ...content, contact: { ...content.contact, location } })} />
                 <Field label="INSTAGRAM" value={content.contact.instagram} onChange={(instagram) => setContent({ ...content, contact: { ...content.contact, instagram } })} />
               </div>
+              <p className="admin-help">O Instagram aparece no contato e no rodapé quando este campo está preenchido. Use @usuario ou a URL completa.</p>
             </section>
             <section className="admin-panel">
               <h2>Pausa cinematográfica</h2>
               <ImageField label="IMAGEM" value={content.cinematic.imageUrl} onChange={(imageUrl) => setContent({ ...content, cinematic: { ...content.cinematic, imageUrl } })} />
               <Field label="FRASE" value={content.cinematic.text} onChange={(text) => setContent({ ...content, cinematic: { ...content.cinematic, text } })} />
+              <Field label="TEXTO ALTERNATIVO" value={content.cinematic.imageAlt} onChange={(imageAlt) => setContent({ ...content, cinematic: { ...content.cinematic, imageAlt } })} />
+            </section>
+            <section className="admin-panel">
+              <h2>Títulos das seções</h2>
+              <p className="admin-help">Use uma quebra de linha para dividir o título em duas linhas.</p>
+              <div className="admin-grid">
+                <Field label="PORTFÓLIO — RÓTULO" value={content.sections.portfolioEyebrow} onChange={(portfolioEyebrow) => setContent({ ...content, sections: { ...content.sections, portfolioEyebrow } })} />
+                <Field label="PORTFÓLIO — TÍTULO" multiline value={content.sections.portfolioTitle} onChange={(portfolioTitle) => setContent({ ...content, sections: { ...content.sections, portfolioTitle } })} />
+                <Field label="PORTFÓLIO — NOTA" multiline value={content.sections.portfolioNote} onChange={(portfolioNote) => setContent({ ...content, sections: { ...content.sections, portfolioNote } })} />
+                <Field label="SERVIÇOS — RÓTULO" value={content.sections.servicesEyebrow} onChange={(servicesEyebrow) => setContent({ ...content, sections: { ...content.sections, servicesEyebrow } })} />
+                <Field label="SERVIÇOS — TÍTULO" value={content.sections.servicesTitle} onChange={(servicesTitle) => setContent({ ...content, sections: { ...content.sections, servicesTitle } })} />
+                <Field label="PROCESSO — RÓTULO" value={content.sections.processEyebrow} onChange={(processEyebrow) => setContent({ ...content, sections: { ...content.sections, processEyebrow } })} />
+                <Field label="PROCESSO — TÍTULO" value={content.sections.processTitle} onChange={(processTitle) => setContent({ ...content, sections: { ...content.sections, processTitle } })} />
+                <Field label="DEPOIMENTOS — RÓTULO" value={content.sections.quotesEyebrow} onChange={(quotesEyebrow) => setContent({ ...content, sections: { ...content.sections, quotesEyebrow } })} />
+                <Field label="DEPOIMENTOS — TÍTULO" multiline value={content.sections.quotesTitle} onChange={(quotesTitle) => setContent({ ...content, sections: { ...content.sections, quotesTitle } })} />
+                <Field label="ARQUIVO — RÓTULO" value={content.sections.archiveEyebrow} onChange={(archiveEyebrow) => setContent({ ...content, sections: { ...content.sections, archiveEyebrow } })} />
+                <Field label="ARQUIVO — TÍTULO" value={content.sections.archiveTitle} onChange={(archiveTitle) => setContent({ ...content, sections: { ...content.sections, archiveTitle } })} />
+                <Field label="CONTATO — RÓTULO" value={content.sections.contactEyebrow} onChange={(contactEyebrow) => setContent({ ...content, sections: { ...content.sections, contactEyebrow } })} />
+                <Field label="CONTATO — TÍTULO" multiline value={content.sections.contactTitle} onChange={(contactTitle) => setContent({ ...content, sections: { ...content.sections, contactTitle } })} />
+                <Field label="RODAPÉ" value={content.sections.footerTagline} onChange={(footerTagline) => setContent({ ...content, sections: { ...content.sections, footerTagline } })} />
+              </div>
+            </section>
+            <section className="admin-panel">
+              <h2>Como funciona</h2>
+              <div className="admin-list-heading">
+                <p>{content.process.length} etapas</p>
+                <button className="admin-secondary" type="button" onClick={() => setContent({ ...content, process: [...content.process, { title: "NOVA ETAPA", desc: "Descreva esta etapa." }] })}>+ ADICIONAR ETAPA</button>
+              </div>
+              {content.process.map((step, index) => (
+                <div className="admin-nested" key={`step-${index}`}>
+                  <Field label={`ETAPA ${String(index + 1).padStart(2, "0")}`} value={step.title} onChange={(title) => setContent({ ...content, process: content.process.map((item, position) => position === index ? { ...item, title } : item) })} />
+                  <Field label="DESCRIÇÃO" multiline value={step.desc} onChange={(desc) => setContent({ ...content, process: content.process.map((item, position) => position === index ? { ...item, desc } : item) })} />
+                  <button className="admin-danger" type="button" onClick={() => setContent({ ...content, process: content.process.filter((_, position) => position !== index) })}>REMOVER ETAPA</button>
+                </div>
+              ))}
+            </section>
+            <section className="admin-panel">
+              <h2>Chamada final</h2>
+              <Field label="RÓTULO" value={content.cta.eyebrow} onChange={(eyebrow) => setContent({ ...content, cta: { ...content.cta, eyebrow } })} />
+              <div className="admin-grid">
+                <Field label="LINHA 1" value={content.cta.line1} onChange={(line1) => setContent({ ...content, cta: { ...content.cta, line1 } })} />
+                <Field label="LINHA 2, EM DESTAQUE SUAVE" value={content.cta.line2} onChange={(line2) => setContent({ ...content, cta: { ...content.cta, line2 } })} />
+                <Field label="LINHA 3" value={content.cta.line3} onChange={(line3) => setContent({ ...content, cta: { ...content.cta, line3 } })} />
+                <Field label="BOTÃO" value={content.cta.button} onChange={(button) => setContent({ ...content, cta: { ...content.cta, button } })} />
+              </div>
+              <Field label="TEXTO" multiline value={content.cta.text} onChange={(text) => setContent({ ...content, cta: { ...content.cta, text } })} />
             </section>
           </div>
         )}
@@ -311,7 +376,7 @@ export default function Admin() {
         {tab === "portfolio" && (
           <div className="admin-sections">
             <div className="admin-list-heading">
-              <p>{content.portfolio.length} fotografias</p>
+              <p>{content.portfolio.length} fotografias. Categoria e ano aparecem no card, como em Casamentos · 2026.</p>
               <button className="admin-secondary" onClick={addPortfolio}>+ ADICIONAR TRABALHO</button>
             </div>
             {content.portfolio.map((item) => (
@@ -324,7 +389,7 @@ export default function Admin() {
                   <label className="admin-field"><span>FORMATO</span><select value={item.layout} onChange={(event) => updatePortfolio(item.id, { layout: event.target.value as WorkLayout })}>{layouts.map((layout) => <option key={layout.value} value={layout.value}>{layout.label}</option>)}</select></label>
                 </div>
                 <Field label="TEXTO ALTERNATIVO" value={item.alt} onChange={(alt) => updatePortfolio(item.id, { alt })} />
-                <button className="admin-danger" onClick={() => setContent({ ...content, portfolio: content.portfolio.filter((photo) => photo.id !== item.id) })}>REMOVER TRABALHO</button>
+                <button className="admin-danger" onClick={() => setContent({ ...content, portfolio: renumber(content.portfolio.filter((photo) => photo.id !== item.id)) })}>REMOVER TRABALHO</button>
               </section>
             ))}
           </div>
@@ -332,11 +397,16 @@ export default function Admin() {
 
         {tab === "servicos" && (
           <div className="admin-sections">
+            <div className="admin-list-heading">
+              <p>{content.services.length} serviços</p>
+              <button className="admin-secondary" type="button" onClick={() => setContent({ ...content, services: renumber([...content.services, { number: "", title: "Novo serviço", desc: "Descreva este serviço.", url: defaultSiteContent.services[0].url }]) })}>+ ADICIONAR SERVIÇO</button>
+            </div>
             {content.services.map((service, index) => (
               <section className="admin-panel admin-item" key={`${service.number}-${index}`}>
                 <ImageField label={`IMAGEM ${service.number}`} value={service.url} onChange={(url) => setContent({ ...content, services: content.services.map((item, position) => position === index ? { ...item, url } : item) })} />
                 <Field label="TÍTULO" value={service.title} onChange={(title) => setContent({ ...content, services: content.services.map((item, position) => position === index ? { ...item, title } : item) })} />
                 <Field label="DESCRIÇÃO" multiline value={service.desc} onChange={(desc) => setContent({ ...content, services: content.services.map((item, position) => position === index ? { ...item, desc } : item) })} />
+                <button className="admin-danger" type="button" onClick={() => setContent({ ...content, services: renumber(content.services.filter((_, position) => position !== index)) })}>REMOVER SERVIÇO</button>
               </section>
             ))}
           </div>
@@ -344,6 +414,10 @@ export default function Admin() {
 
         {tab === "depoimentos" && (
           <div className="admin-sections">
+            <div className="admin-list-heading">
+              <p>{content.quotes.length} depoimentos</p>
+              <button className="admin-secondary" type="button" onClick={() => setContent({ ...content, quotes: [...content.quotes, { text: "Escreva o depoimento.", name: "Nome", context: "Tipo de trabalho" }] })}>+ ADICIONAR DEPOIMENTO</button>
+            </div>
             {content.quotes.map((quote, index) => (
               <section className="admin-panel admin-item" key={index}>
                 <Field label="DEPOIMENTO" multiline value={quote.text} onChange={(text) => setContent({ ...content, quotes: content.quotes.map((item, position) => position === index ? { ...item, text } : item) })} />
@@ -351,6 +425,7 @@ export default function Admin() {
                   <Field label="NOME" value={quote.name} onChange={(name) => setContent({ ...content, quotes: content.quotes.map((item, position) => position === index ? { ...item, name } : item) })} />
                   <Field label="TIPO DE TRABALHO" value={quote.context} onChange={(context) => setContent({ ...content, quotes: content.quotes.map((item, position) => position === index ? { ...item, context } : item) })} />
                 </div>
+                <button className="admin-danger" type="button" onClick={() => setContent({ ...content, quotes: content.quotes.filter((_, position) => position !== index) })}>REMOVER DEPOIMENTO</button>
               </section>
             ))}
           </div>
